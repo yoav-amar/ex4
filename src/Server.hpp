@@ -14,6 +14,7 @@ namespace serverSide{
         private:
             uint16_t sockfd;
         protected:
+            struct sockaddr_in address;
             uint16_t getSockfd();
             void init(uint16_t port);
     };

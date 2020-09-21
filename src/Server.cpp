@@ -22,9 +22,8 @@ uint16_t serverSide::AbstractServer::getSockfd(){
 }
 
 void serverSide::AbstractServer::init(uint16_t port){
-    struct sockaddr_in address; 
-
-    
+     
+ 
     const auto sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0) {
         THROW_SYSTEM_ERROR();
@@ -49,6 +48,13 @@ void serverSide::AbstractServer::init(uint16_t port){
 
 void serverSide::SerialServer::open(uint16_t port,const client::ClientHandle& handeler){
     init(port);
+    int clientSocket, addlen;
+    while (true)
+    {
+        addlen = sizeof(address);
+        clientSocket = accept(getSockfd(), reinterpret_cast<sockaddr*>(&address),
+                    reinterpret_cast<socklen_t*>(&addlen));
+    }
 
 
 }
