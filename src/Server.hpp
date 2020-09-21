@@ -13,6 +13,8 @@ namespace serverSide{
     class AbstractServer : Server{
         private:
             uint16_t sockfd;
+        protected:
+            uint16_t getSockfd();
             void init(uint16_t port);
     };
     class SerialServer : AbstractServer{
