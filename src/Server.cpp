@@ -15,7 +15,7 @@
 #define THROW_SYSTEM_ERROR() \
     throw std::system_error { errno, std::system_category() }
 
-void serverSide::SerialServer::open(int16_t port,const client::ClientHandle& handeler){
+void serverSide::SerialServer::open(uint16_t port,const client::ClientHandle& handeler){
     struct sockaddr_in address; 
 
     

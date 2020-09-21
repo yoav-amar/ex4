@@ -7,12 +7,12 @@ namespace serverSide{
     private:
         
     public:
-        virtual void open(int16_t port,const client::ClientHandle& handeler) = 0;
+        virtual void open(uint16_t port,const client::ClientHandle& handeler) = 0;
         virtual void stop() = 0;
     };
 
     class SerialServer : Server{
-        void open(int16_t port,const client::ClientHandle& handeler);
+        void open(uint16_t port,const client::ClientHandle& handeler);
         void stop();
     };
     
