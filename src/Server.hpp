@@ -10,8 +10,12 @@ namespace serverSide{
         virtual void open(uint16_t port,const client::ClientHandle& handeler) = 0;
         virtual void stop() = 0;
     };
-
-    class SerialServer : Server{
+    class AbstractServer : Server{
+        private:
+            uint16_t sockfd;
+            void init(uint16_t port);
+    };
+    class SerialServer : AbstractServer{
         void open(uint16_t port,const client::ClientHandle& handeler);
         void stop();
     };
