@@ -12,6 +12,8 @@ namespace serverSide{
     };
 
     class SerialServer : Server{
+        void open(int16_t port,const client::ClientHandle& handeler);
+        void stop();
     };
     
 }
