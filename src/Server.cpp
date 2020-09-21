@@ -15,7 +15,9 @@
 #define THROW_SYSTEM_ERROR() \
     throw std::system_error { errno, std::system_category() }
 
-
+uint16_t serverSide::AbstractServer::getSockfd(){
+    return sockfd;
+}
 
 void serverSide::AbstractServer::init(uint16_t port){
         struct sockaddr_in address; 
