@@ -2,6 +2,7 @@
 #include <vector>
 #include <cstdint>
 #include "Matrix.hpp"
+#include <memory>
 namespace state {
 class MazeState {
 private:
@@ -36,9 +37,9 @@ public:
    * by a given maze.
    *
    * @param matrix is a mmatrix of a maze that the state represnt a boot on it.
-   * @return std::vector<mazeState> is a vector of all the neighbors boots of
+   * @return std::vector<mazeState> is a vector of all the neighbors boots ofget
    * the boot that represent this state on the maze.
    */
-  std::vector<state::MazeState> getAllPossibleNeighbors(matrix::Matrix matrix);
+  std::vector<state::MazeState> getAllPossibleNeighbors(matrix::Matrix& matrix);
 };
 } // namespace state
