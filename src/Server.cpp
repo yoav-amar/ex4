@@ -57,16 +57,18 @@ void serverSide::AbstractServer::stop(){
 
 void serverSide::SerialServer::open(std::uint16_t port, const client::ClientHandle& handeler){
     init(port);
-    int clientSocket, addlen;
+    sockaddr_in recive{};
+    int clientSocket, len;
     while (isRunning())
     {
-        addlen = sizeof(address);
-        clientSocket = accept(getSockfd(), reinterpret_cast<sockaddr*>(&address),
-                    reinterpret_cast<socklen_t*>(&addlen));
+        len = sizeof(recive);
+        clientSocket = accept(getSockfd(), reinterpret_cast<sockaddr*>(&recive),
+                    reinterpret_cast<socklen_t*>(&len));
         if(clientSocket < 0){
             close(getSockfd());
             THROW_SYSTEM_ERROR(); 
         }
+        //handle
     }
 
 
@@ -74,16 +76,18 @@ void serverSide::SerialServer::open(std::uint16_t port, const client::ClientHand
 
 void serverSide::ParallelServer::open(std::uint16_t port, const client::ClientHandle& handeler){
     init(port);
-    int clientSocket, addlen;
+    sockaddr_in recive{};
+    int clientSocket, len;
     while (isRunning())
     {
-        addlen = sizeof(address);
-        clientSocket = accept(getSockfd(), reinterpret_cast<sockaddr*>(&address),
-                    reinterpret_cast<socklen_t*>(&addlen));
+        len = sizeof(recive);
+        clientSocket = accept(getSockfd(), reinterpret_cast<sockaddr*>(&recive),
+                    reinterpret_cast<socklen_t*>(&len));
         if(clientSocket < 0){
             close(getSockfd());
             THROW_SYSTEM_ERROR(); 
         }
+        //handle
         
     }
 }
