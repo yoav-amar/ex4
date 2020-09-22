@@ -22,14 +22,14 @@ public:
    *
    * @return int
    */
-  int getX();
+  uint32_t getX();
 
   /**
    * @brief return the y position of this state.
    *
    * @return int
    */
-  int getY();
+  uint32_t getY();
 
   /**
    * @brief Get the All Possible Neighbors (as a vector of states) of this state
