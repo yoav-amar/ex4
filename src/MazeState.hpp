@@ -1,12 +1,20 @@
 #include <vector>
 
 namespace state {
-class mazeState {
+class MazeState {
 private:
-  int x;
-  int y;
+  uint32_t x;
+  uint32_t y;
 
 public:
+
+/**
+ * @brief Construct a new Maze State object.
+ * 
+ * @param x is an integer.
+ * @param y is an integer.
+ */
+  MazeState(uint32_t x, uint32_t y);
   /**
    * @brief return the x position of this state.
    *
@@ -29,6 +37,6 @@ public:
    * @return std::vector<mazeState> is a vector of all the neighbors boots of
    * the boot that represent this state on the maze.
    */
-  std::vector<mazeState> getAllPossibleNeighbors(maze::Maze maze);
+  std::vector<state::MazeState> getAllPossibleNeighbors(maze::Maze maze);
 };
 } // namespace state
