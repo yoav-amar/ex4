@@ -54,6 +54,9 @@ void serverSide::SerialServer::open(uint16_t port,const client::ClientHandle& ha
         addlen = sizeof(address);
         clientSocket = accept(getSockfd(), reinterpret_cast<sockaddr*>(&address),
                     reinterpret_cast<socklen_t*>(&addlen));
+        if(clientSocket < 0){
+            THROW_SYSTEM_ERROR(); 
+        }
     }
 
 
