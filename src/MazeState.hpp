@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <cstdint>
-#include "Maze.hpp"
+#include "Matrix.hpp"
 namespace state {
 class MazeState {
 private:
@@ -35,10 +35,10 @@ public:
    * @brief Get the All Possible Neighbors (as a vector of states) of this state
    * by a given maze.
    *
-   * @param maze is a maze to that the state represnt a boot on it.
+   * @param matrix is a mmatrix of a maze that the state represnt a boot on it.
    * @return std::vector<mazeState> is a vector of all the neighbors boots of
    * the boot that represent this state on the maze.
    */
-  std::vector<state::MazeState> getAllPossibleNeighbors(maze::Maze maze);
+  std::vector<state::MazeState> getAllPossibleNeighbors(matrix::Matrix matrix);
 };
 } // namespace state
