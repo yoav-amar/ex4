@@ -24,7 +24,11 @@ namespace serverSide{
         
     };
     class SerialServer : AbstractServer{
-        void open(std::uint16_t port,const client::ClientHandle& handeler);
+        void open(std::uint16_t port, const client::ClientHandle& handeler);
+    };
+
+    class ParallelServer : AbstractServer{
+        void open (std::uint16_t port, const client::ClientHandle& handeler);
     };
     
 }
