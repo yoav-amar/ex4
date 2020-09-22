@@ -7,24 +7,24 @@ namespace serverSide{
     private:
         
     public:
-        virtual void open(uint16_t port,const client::ClientHandle& handeler) = 0;
+        virtual void open(std::uint16_t port,const client::ClientHandle& handeler) = 0;
         virtual void stop() = 0;
     };
     class AbstractServer : Server{
         private:
-            uint16_t sockfd;
+            std::uint16_t sockfd;
             bool isStop;
         protected:
             struct sockaddr_in address;
-            uint16_t getSockfd();
-            void init(uint16_t port);
+            std::uint16_t getSockfd();
+            void init(std::uint16_t port);
             bool isRunning();
         public:
             void stop();
         
     };
     class SerialServer : AbstractServer{
-        void open(uint16_t port,const client::ClientHandle& handeler);
+        void open(std::uint16_t port,const client::ClientHandle& handeler);
     };
     
 }

@@ -5,6 +5,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <thread>
 #include <iostream>
 #include <string_view>
 #include <system_error>
@@ -17,11 +18,11 @@
 #define THROW_SYSTEM_ERROR() \
     throw std::system_error { errno, std::system_category() }
 
-uint16_t serverSide::AbstractServer::getSockfd(){
+std::uint16_t serverSide::AbstractServer::getSockfd(){
     return sockfd;
 }
 
-void serverSide::AbstractServer::init(uint16_t port){
+void serverSide::AbstractServer::init(std::uint16_t port){
      
  
     const auto sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -54,7 +55,7 @@ void serverSide::AbstractServer::stop(){
     isStop = true;
 }
 
-void serverSide::SerialServer::open(uint16_t port,const client::ClientHandle& handeler){
+void serverSide::SerialServer::open(std::uint16_t port,const client::ClientHandle& handeler){
     init(port);
     int clientSocket, addlen;
     while (isRunning())
