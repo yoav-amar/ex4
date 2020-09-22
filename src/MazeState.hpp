@@ -1,10 +1,12 @@
+#pragma once
 #include <vector>
-
+#include <cstdint>
+#include "Maze.hpp"
 namespace state {
 class MazeState {
 private:
-  uint32_t x;
-  uint32_t y;
+  uint32_t m_x;
+  uint32_t m_y;
 
 public:
 
