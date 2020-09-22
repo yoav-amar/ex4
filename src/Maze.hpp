@@ -1,6 +1,7 @@
+#pragma once
 #include "Matrix.hpp"
 #include "MazeState.hpp"
-
+#include <cstdint>
 namespace maze {
     class Maze {
         private:
