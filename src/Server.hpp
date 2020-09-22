@@ -13,14 +13,18 @@ namespace serverSide{
     class AbstractServer : Server{
         private:
             uint16_t sockfd;
+            bool isStop;
         protected:
             struct sockaddr_in address;
             uint16_t getSockfd();
             void init(uint16_t port);
+            bool isRunning();
+        public:
+            void stop();
+        
     };
     class SerialServer : AbstractServer{
         void open(uint16_t port,const client::ClientHandle& handeler);
-        void stop();
     };
     
 }

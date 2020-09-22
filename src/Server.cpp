@@ -46,10 +46,18 @@ void serverSide::AbstractServer::init(uint16_t port){
     
 }
 
+bool serverSide::AbstractServer::isRunning(){
+    return !isStop;
+}
+
+void serverSide::AbstractServer::stop(){
+    isStop = true;
+}
+
 void serverSide::SerialServer::open(uint16_t port,const client::ClientHandle& handeler){
     init(port);
     int clientSocket, addlen;
-    while (true)
+    while (isRunning())
     {
         addlen = sizeof(address);
         clientSocket = accept(getSockfd(), reinterpret_cast<sockaddr*>(&address),
