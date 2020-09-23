@@ -1,5 +1,8 @@
-#include "Maze.hpp"
+#pragma once
 
+#include "Maze.hpp"
+#include "MazeState.hpp"
+#include "StatesPair.hpp"
 
 namespace searchAlgoritem {
     class SearchAlgoritm {
@@ -10,11 +13,16 @@ namespace searchAlgoritem {
         maze::Maze getMaze();
         SearchAlgoritm(maze::Maze maze);
         virtual void solve();
-        virtual ~SearchAlgoritm();
+         ~SearchAlgoritm();
     };
 
     class BFS_Algoritem : public SearchAlgoritm {
+        private:
+        static bool boothIsAlreadyVisited(const std::vector<statesPair::StatesPair>& booths, const state::MazeState& other );
+        
+        public:
         BFS_Algoritem(maze::Maze maze);
-        void solve();
+        virtual void solve();
+         ~BFS_Algoritem();
     };
 }
