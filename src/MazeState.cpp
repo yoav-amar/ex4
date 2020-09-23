@@ -39,10 +39,15 @@ std::vector<state::MazeState> state::MazeState::getAllPossibleNeighbors(const ma
 }
 
 bool state::MazeState::equlas(const state::MazeState& other ) const {
-    if (other.m_x == m_x && other.m_y == m_y) {
+    if (other.getX() == m_x && other.getY() == m_y) {
         return true;
     }
     return false;
+}
+
+void state::MazeState::set(state::MazeState& const other) {
+    m_x = other.getX();
+    m_y = other.getY();
 }
 
 state::MazeState::~MazeState() = default;

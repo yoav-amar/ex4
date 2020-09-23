@@ -44,6 +44,7 @@ public:
 
   bool equlas(const state::MazeState& state) const;
   
+  void set(state::MazeState& const other);
 
   ~MazeState();
 
