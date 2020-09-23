@@ -1,7 +1,8 @@
 #pragma once
-
+#include <string>
 #include "MazeState.hpp"
 #include<cstdint>
+
 namespace statesPair {
     class StatesPair {
         private:
@@ -12,6 +13,8 @@ namespace statesPair {
         StatesPair(const state::MazeState cur, const state::MazeState prev);
         state::MazeState getPrev() const;
         state::MazeState getCur() const;
+        void set(statesPair::StatesPair);
+        std::string getStepFromPrevToCur();
         ~StatesPair();
     };
 }
