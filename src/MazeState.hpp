@@ -41,5 +41,10 @@ public:
    * the boot that represent this state on the maze.
    */
   std::vector<state::MazeState> getAllPossibleNeighbors(const matrix::Matrix& matrix) const;
+
+  bool equlas(const state::MazeState& state) const;
+  
+
+
 };
 } // namespace state

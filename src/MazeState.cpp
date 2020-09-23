@@ -37,3 +37,10 @@ std::vector<state::MazeState> state::MazeState::getAllPossibleNeighbors(const ma
     }
     return neighbors;
 }
+
+bool state::MazeState::equlas(const state::MazeState& other ) const {
+    if (other.m_x == m_x && other.m_y == m_y) {
+        return true;
+    }
+    return false;
+}
