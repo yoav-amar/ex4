@@ -5,9 +5,9 @@
 namespace maze {
     class Maze {
         private:
-        matrix::Matrix matrix;
-        state::MazeState startState;
-        state::MazeState endState;
+        matrix::Matrix m_mazeAsMatrix;
+        state::MazeState m_startState;
+        state::MazeState m_endState;
 
         public:
         /**
