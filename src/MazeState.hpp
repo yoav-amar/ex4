@@ -17,20 +17,20 @@ public:
  * @param x is an integer.
  * @param y is an integer.
  */
-  MazeState(uint32_t x, uint32_t y);
+  MazeState(const uint32_t x, const uint32_t y);
   /**
    * @brief return the x position of this state.
    *
    * @return int
    */
-  uint32_t getX();
+  uint32_t getX() const;
 
   /**
    * @brief return the y position of this state.
    *
    * @return int
    */
-  uint32_t getY();
+  uint32_t getY() const;
 
   /**
    * @brief Get the All Possible Neighbors (as a vector of states) of this state
@@ -40,6 +40,6 @@ public:
    * @return std::vector<mazeState> is a vector of all the neighbors boots ofget
    * the boot that represent this state on the maze.
    */
-  std::vector<state::MazeState> getAllPossibleNeighbors(matrix::Matrix& matrix);
+  std::vector<state::MazeState> getAllPossibleNeighbors(const matrix::Matrix& matrix) const;
 };
 } // namespace state

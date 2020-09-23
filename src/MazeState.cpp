@@ -3,20 +3,20 @@
 #include <vector>
 #include "Matrix.hpp"
 #include <iostream>
-state::MazeState::MazeState(uint32_t x, uint32_t y) {
+state::MazeState::MazeState(const uint32_t x, const uint32_t y) {
     m_x = x;
     m_y = y;
 }
 
-uint32_t state::MazeState::getX() {
+uint32_t state::MazeState::getX() const {
     return m_x;
 }
 
-uint32_t state::MazeState::getY() {
+uint32_t state::MazeState::getY() const {
     return m_y;
 }
 
-std::vector<state::MazeState> state::MazeState::getAllPossibleNeighbors(matrix::Matrix& matrix) {
+std::vector<state::MazeState> state::MazeState::getAllPossibleNeighbors(const matrix::Matrix& matrix) const {
    std::vector<state::MazeState> neighbors;
     if (( m_x - 1 ) >= 0 && matrix.getValue(m_x - 1, m_y) != -1) {
        auto leftNeighbor = state::MazeState(m_x - 1, m_y);
