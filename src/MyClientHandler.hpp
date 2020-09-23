@@ -5,7 +5,7 @@
 #include "CacheManager.hpp"
 #include "Problem.hpp"
 
-namespace Handle{
+namespace handle{
     class ClientHandle{
         private:
 
