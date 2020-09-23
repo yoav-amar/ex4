@@ -24,34 +24,34 @@ namespace maze {
          * 
          * @return uint32_t - the width of the maze.
          */
-        uint32_t getWidth();
+        uint32_t getWidth() const;
         /**
          * @brief Get the Height of the maztrix that represent the maze.
          * 
          * @return uint32_t - the height of the matrix.
          */
-        uint32_t getHeight();
+        uint32_t getHeight() const;
         
         /**
          * @brief Get the Matrix that represent the maze.
          * 
          * @return matrix::Matrix - a mztrix that represent the maze.
          */
-        matrix::Matrix getMazeAsMatrix();
+        matrix::Matrix getMazeAsMatrix() const;
         
         /**
          * @brief get the start state of this maze.
          * 
          * @return state::MazeState - the start state of this maze.
          */
-        state::MazeState getstartState();
+        state::MazeState getstartState() const;
         
         /**
          * @brief Get the end state of this matrix.
          * 
          * @return state::MazeState - the end state of this matrix.
          */
-        state::MazeState getEndState();
+        state::MazeState getEndState() const ;
 
          ~Maze();
     };
