@@ -1,3 +1,5 @@
+#pragma once
+
 #include "MazeState.hpp"
 #include<cstdint>
 namespace statesPair {
@@ -10,5 +12,6 @@ namespace statesPair {
         StatesPair(const state::MazeState cur, const state::MazeState prev);
         state::MazeState getPrev() const;
         state::MazeState getCur() const;
+        ~StatesPair();
     };
 }
