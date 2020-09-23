@@ -5,6 +5,7 @@
 #include <memory>
 #include <queue>
 #include <iostream>
+#include "Soloution.hpp"
 
 searchAlgoritem::SearchAlgoritm::SearchAlgoritm(maze::Maze maze)
     : m_maze(maze) {}
@@ -33,18 +34,18 @@ bool searchAlgoritem::BFS_Algoritem::boothIsAlreadyVisited(const std::vector<sta
     return false;
 }
 
-void searchAlgoritem::BFS_Algoritem::solve() {
+soloution::Soloution searchAlgoritem::BFS_Algoritem::solve() {
   auto queue = std::make_unique<std::queue<statesPair::StatesPair>>();
   auto usedBooths = std::make_unique<std::vector<statesPair::StatesPair>>();
   auto startingBooth = std::make_unique<statesPair::StatesPair>(m_maze.getstartState(), m_maze.getstartState());
   queue->push(*startingBooth);
   while (!queue->empty()) {
+      //if we got to the end state find the soloution...
     if (queue->front().getCur().equlas(m_maze.getEndState())) {
         usedBooths->push_back(queue->front());
-    //   restoreSolution(usedBooths)
-        std::cout<<"success"<<std::endl;
-      return;
+        return soloution::Soloution::restoreSoloution(*usedBooths, m_maze);
     }
+    //if this state is not the end state get all the neighbors of this state to the queue(onlt the one we hasn't visited yet)
     auto neighbors = std::make_unique<std::vector<state::MazeState>>(m_maze.getEndState().getAllPossibleNeighbors(m_maze.getMazeAsMatrix()));
     for (int  i = 0; i < neighbors->size(); i ++) {
         if(!boothIsAlreadyVisited(*usedBooths,neighbors->at(i))) {
@@ -52,8 +53,10 @@ void searchAlgoritem::BFS_Algoritem::solve() {
         queue->push(*pair);
         }
     }
+    //move the top element from the queue to the usedElements vector.
     usedBooths->push_back(queue->front());
     queue->pop();
   }
-  std::cout<<"failure";
+  auto failureSoloution = std::make_unique<soloution::Soloution>(-1, "no solotion");
+  return *failureSoloution;
 }
