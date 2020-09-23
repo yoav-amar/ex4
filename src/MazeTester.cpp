@@ -4,6 +4,18 @@
 #include "MazeState.hpp"
 #include <iostream>
 
+void printState(state::MazeState&& s) {
+    std::cout<<s.getX()<<","<<s.getY()<<std::endl;
+}
+
+void printMatrix(matrix::Matrix&& m) {
+    for (int i =0; i < m.getHight(); i ++) {
+        for (int j = 0; j < m.getWidth(); j++) {
+            std::cout<<m.getValue(i,j);
+        }
+    }
+}
+
 int mazeTester::MazeTester::check() const {
     bool mistake = false; 
     int count = 0;
@@ -24,6 +36,10 @@ int mazeTester::MazeTester::check() const {
         mistake = true;
         std::cout<<"mistake at getWidth. your width is "<<maze->getHeight()<< "but it is actually 3"<<std::endl;
     }
+    printState(maze->getstartState());
+    printState(maze->getEndState());
+    printMatrix(maze->getMazeAsMatrix());
+
     if(!mistake) {
         std::cout<<"success"<<std::endl;
         return 0;
