@@ -52,5 +52,7 @@ namespace maze {
          * @return state::MazeState - the end state of this matrix.
          */
         state::MazeState getEndState();
+
+         ~Maze();
     };
 }

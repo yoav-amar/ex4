@@ -45,6 +45,7 @@ public:
   bool equlas(const state::MazeState& state) const;
   
 
+  ~MazeState();
 
 };
 } // namespace state

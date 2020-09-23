@@ -15,3 +15,7 @@ state::MazeState statesPair::StatesPair::getPrev() const{
      return *state;
 }
 
+statesPair::StatesPair::~StatesPair() {
+    m_prevState.~MazeState();
+    m_curState.~MazeState();
+}

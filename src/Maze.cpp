@@ -27,5 +27,10 @@ state::MazeState maze::Maze::getEndState() {
     return *s;   
 }
 
+maze::Maze::~Maze() {
+    m_startState.~MazeState();
+    m_endState.~MazeState();
+    m_mazeAsMatrix.~Matrix();
+}
 
 

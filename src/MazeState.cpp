@@ -44,3 +44,5 @@ bool state::MazeState::equlas(const state::MazeState& other ) const {
     }
     return false;
 }
+
+state::MazeState::~MazeState() = default;
