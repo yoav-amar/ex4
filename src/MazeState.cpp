@@ -45,9 +45,9 @@ bool state::MazeState::equlas(const state::MazeState& other ) const {
     return false;
 }
 
-void state::MazeState::set(state::MazeState& const other) {
-    m_x = other.getX();
-    m_y = other.getY();
+void state::MazeState::set(const uint32_t x, const uint32_t y) {
+    m_x = x;
+    m_y = y;
 }
 
 state::MazeState::~MazeState() = default;
