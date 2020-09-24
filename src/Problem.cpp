@@ -7,6 +7,7 @@
 #include "CacheException.hpp"
 #include "crc.h"
 #include "ParseBmp.hpp"
+#include "SearchAlgoritem.hpp"
 
 
 problem::Problem::Problem (const std::vector<std::string>& inputFiles, const std::string& typeOfProblem) : 
@@ -16,6 +17,7 @@ problem::Matrix::Matrix (const std::vector<std::string>& inputFiles, const std::
                                 Problem(inputFiles, typeOfProblem){}
 
 problem::Problem::~Problem() = default;
+
 
 
 
@@ -233,4 +235,93 @@ matrix::Matrix problem::Matrix::fileToMatrix(const std::string& inputFile){
         }
     }
     return *result;
+}
+
+problem::Search::Search(std::string matrixInformnation, std::string typeOfAlgoritem = "BFS", std::string startPoint, std::string endPoint): 
+   Problem({""},"") ,m_typeOfAlgoritem(typeOfAlgoritem)
+{
+    uint32_t i = 0;
+    uint32_t width = 1;
+    uint32_t height = 1;
+    std::size_t place = 0;
+    while (matrixInformnation[i] != '\n')
+    {
+        if(matrixInformnation[i] == ','){
+            ++width;
+        }
+        ++i;
+    }
+
+    for(uint32_t j  = 0; j < matrixInformnation.size(); ++j){
+        if(!isValid(matrixInformnation[j])){
+            throw cacheExcption::CacheExcpetion(error::error_cant_solve_the_problem);
+        }
+        if(matrixInformnation[j] == '\n'){
+            ++height;
+        }
+    }
+    matrix::Matrix* result = new matrix::Matrix(height, width);
+    for(uint32_t k = 0; k < height; ++k){
+        for(uint32_t t = 0; t < width ; t++){
+            while (!isNumber(matrixInformnation[place]))
+            {
+                ++place;
+            }
+            double tmp = std::stod(matrixInformnation.substr(place));
+            while (isNumber(matrixInformnation[place]) || matrixInformnation[place] == '.')
+            {
+                ++place;
+            }
+            
+            result->setValue(k, t, tmp);
+            
+        }
+    }
+    std::string startPoint_x_asString;
+    std::string startPoint_y_asString;
+    std::string endPoint_x_asString;
+    std::string endPoint_y_asString;
+    
+    uint32_t count = 0;
+    while(startPoint[count] != ',' ) {
+        startPoint_x_asString += startPoint[count];
+        ++count;
+    }
+    ++count;
+    while(startPoint[count] != 0) {
+        startPoint_y_asString += startPoint[count];
+        ++count;
+    }
+    count = 0;
+    while(endPoint[count] != ',' ) {
+        startPoint_x_asString += endPoint[count];
+        ++count;
+    }
+    ++count;
+    while(endPoint[count] != 0) {
+        startPoint_y_asString += endPoint[count];
+        ++count;
+    }
+    uint32_t startPoint_x_asInt = std::stoi(startPoint_x_asString);
+    uint32_t startPoint_y_asInt = std::stoi(startPoint_x_asString);
+    uint32_t endPoint_x_asInt = std::stoi(startPoint_x_asString);
+    uint32_t endPoint_y_asInt = std::stoi(startPoint_x_asString);
+
+    auto startState = std::make_unique<state::MazeState>(startPoint_x_asInt, startPoint_y_asInt);
+    auto endState = std::make_unique<state::MazeState>(endPoint_x_asInt, endPoint_y_asInt);
+
+    maze::Maze m_maze(*result, *startState, *endState);
+}
+std::string problem::Search::solveProblem() const {
+    std::unique_ptr<searchAlgoritem::SearchAlgoritm> searcher;
+    if (m_typeOfAlgoritem == "DFS") {
+         searcher = std::make_unique<searchAlgoritem::DFS_Algoritem>(m_maze);
+    }
+    //there will be some other algortiems....
+    else {
+         searcher = std::make_unique<searchAlgoritem::BFS_Algoritem>(m_maze);
+    }
+    auto soloution = std::make_unique<soloution::Soloution>(searcher->solve());
+    std::string result = std::to_string(soloution->getCost()) + "," + m_typeOfAlgoritem + "," + soloution->getPathToSoloution();
+    return result;
 }
