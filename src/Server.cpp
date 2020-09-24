@@ -70,7 +70,7 @@ void serverSide::SerialServer::open(std::uint16_t port, const handle::ClientHand
         }
         handeler.handleClient(clientSocket, clientSocket);
     }
-
+    close(getSockfd());
 
 }
 
@@ -90,4 +90,5 @@ void serverSide::ParallelServer::open(std::uint16_t port, const handle::ClientHa
         //handle
         
     }
+    close(getSockfd());
 }
