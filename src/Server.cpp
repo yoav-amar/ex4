@@ -19,14 +19,14 @@
     throw std::system_error { errno, std::system_category() }
 
 std::uint16_t serverSide::AbstractServer::getSockfd(){
-    return sockfd;
+    return m_sockfd;
 }
 
 void serverSide::AbstractServer::init(std::uint16_t port){
      
  
-    const auto sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sockfd < 0) {
+    m_sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (m_sockfd < 0) {
         THROW_SYSTEM_ERROR();
     }
     
@@ -34,25 +34,25 @@ void serverSide::AbstractServer::init(std::uint16_t port){
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(port);
 
-    if (bind(sockfd, reinterpret_cast<const sockaddr*>(&address),
+    if (bind(m_sockfd, reinterpret_cast<const sockaddr*>(&address),
                     sizeof(address)) < 0) {
-        close(sockfd);
+        close(m_sockfd);
         THROW_SYSTEM_ERROR();
     }
 
-    if(listen(sockfd, BACKLOG) < 0){
-        close(sockfd);
+    if(listen(m_sockfd, BACKLOG) < 0){
+        close(m_sockfd);
         THROW_SYSTEM_ERROR();
     }
     
 }
 
 bool serverSide::AbstractServer::isRunning(){
-    return !isStop;
+    return !m_isStop;
 }
 
 void serverSide::AbstractServer::stop(){
-    isStop = true;
+    m_isStop = true;
 }
 
 void serverSide::SerialServer::open(std::uint16_t port, const handle::ClientHandle& handeler){
