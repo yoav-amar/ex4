@@ -117,13 +117,6 @@ void handle::ClientHandle::handleClient(std::uint16_t out,std::uint16_t in) cons
                 message = message.substr(message.find("\r\n\r\n") + sizeof("\r\n\r\n") -1);
             }
         }
-        end = std::chrono::steady_clock::now();
-        if(end - start > watingTime){
-            std::chrono::duration<double> elapsed_seconds = end-start;
-            std::cout << "elapsed time: " << elapsed_seconds.count() << "s" << std::endl;
-            stop = true;
-        }
-
     }
     close(in);
 }
