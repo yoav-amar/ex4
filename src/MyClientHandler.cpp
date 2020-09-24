@@ -24,29 +24,29 @@ void printMsg(uint16_t out, int status, const std::string& msg){
     }
 }
 
-void parseFirstMsg(uint16_t out, const std::string& msg){
+void parseFirstMsg(uint16_t out, std::string& msg){
     if(msg.find("solve") != 0){
         printMsg(out, 1, "");
     }
     //advance the string after the sub string 'solve'
-    std::string tmp = msg.substr(sizeof("solve") -1);
-    while (tmp[0] == ' ' || tmp[0] == '\t')
+    msg = msg.substr(sizeof("solve") -1);
+    while (msg[0] == ' ' || msg[0] == '\t')
     {
         //advance the space
-        tmp = tmp.substr(1);
+        msg = msg.substr(1);
     }
-    if(tmp.find("find-graph-path") != 0){
+    if(msg.find("find-graph-path") != 0){
         printMsg(out, 1, "");
     }
     //advance the string after the sub string 'find-graph-path'
-    std::string tmp = msg.substr(sizeof("find-graph-path") -1);
-    while (tmp[0] == ' ' || tmp[0] == '\t')
+    msg = msg.substr(sizeof("find-graph-path") -1);
+    while (msg[0] == ' ' || msg[0] == '\t')
     {
         //advance the space
-        tmp = tmp.substr(1);
+        msg = msg.substr(1);
     }
     //the defualt algorithem.
-    if(!tmp.compare("")){
+    if(!msg.compare("")){
         printMsg(out, 0, "");
     }else{
         try{
