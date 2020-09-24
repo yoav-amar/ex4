@@ -32,4 +32,14 @@ maze::Maze::~Maze() {
     m_endState.~MazeState();
 }
 
+void maze::Maze::set(const matrix::Matrix& matrix, const state::MazeState& startState, const state::MazeState& endState) {
+    for(int i = 0; i < matrix.getHight(); i++) {
+        for(int j = 0; j < matrix.getWidth(); j++) {
+            m_mazeAsMatrix.setValue(i , j, matrix.getValue(i,j));
+        }
+    }
+    m_startState.set(startState.getX(), startState.getY());
+    m_endState.set(endState.getX(), endState.getY());
+}
+
 

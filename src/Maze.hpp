@@ -53,6 +53,17 @@ namespace maze {
          */
         state::MazeState getEndState() const ;
 
+        /**
+         * @brief Destroy the Maze object
+         * 
+         */
          ~Maze();
+
+        /**
+         * @brief set thhis object.
+         * 
+         */
+         void set(const matrix::Matrix& matrix, const state::MazeState& startState, const state::MazeState& endState);
+
     };
 }
