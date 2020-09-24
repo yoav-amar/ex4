@@ -55,10 +55,10 @@ void serverSide::AbstractServer::stop(){
     isStop = true;
 }
 
-void serverSide::SerialServer::open(std::uint16_t port, const client::ClientHandle& handeler){
+void serverSide::SerialServer::open(std::uint16_t port, const handle::ClientHandle& handeler){
     init(port);
     sockaddr_in recive{};
-    int clientSocket, len;
+    uint16_t clientSocket, len;
     while (isRunning())
     {
         len = sizeof(recive);
@@ -68,13 +68,13 @@ void serverSide::SerialServer::open(std::uint16_t port, const client::ClientHand
             close(getSockfd());
             THROW_SYSTEM_ERROR(); 
         }
-        //handle
+        handeler.handleClient(clientSocket, clientSocket);
     }
 
 
 }
 
-void serverSide::ParallelServer::open(std::uint16_t port, const client::ClientHandle& handeler){
+void serverSide::ParallelServer::open(std::uint16_t port, const handle::ClientHandle& handeler){
     init(port);
     sockaddr_in recive{};
     int clientSocket, len;

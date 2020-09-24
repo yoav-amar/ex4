@@ -1,13 +1,13 @@
 #pragma once
 #include <iostream>
-#include "ClientHandle.hpp"
+#include "MyClientHandler.hpp"
 namespace serverSide{
     class Server
     {
     private:
         
     public:
-        virtual void open(std::uint16_t port,const client::ClientHandle& handeler) = 0;
+        virtual void open(std::uint16_t port,const const handle::ClientHandle& handeler) = 0;
         virtual void stop() = 0;
     };
     class AbstractServer : Server{
@@ -24,11 +24,11 @@ namespace serverSide{
         
     };
     class SerialServer : AbstractServer{
-        void open(std::uint16_t port, const client::ClientHandle& handeler);
+        void open(std::uint16_t port, const handle::ClientHandle& handeler);
     };
 
     class ParallelServer : AbstractServer{
-        void open (std::uint16_t port, const client::ClientHandle& handeler);
+        void open (std::uint16_t port, const handle::ClientHandle& handeler);
     };
     
 }
