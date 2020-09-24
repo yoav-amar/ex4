@@ -19,11 +19,48 @@ void printMsg(uint16_t out, int status, const std::string& msg){
         fullMsg += "\r\n\r\n" + msg;
     }
     fullMsg += "\r\n\r\n";
-    //std::cout << fullMsg << std::endl;
     if(write(out, fullMsg.data(), fullMsg.length()) < 0){
         //throw exception
     }
 }
+
+void parseFirstMsg(uint16_t out, const std::string& msg){
+    if(msg.find("solve") != 0){
+        printMsg(out, 1, "");
+    }
+    //advance the string after the sub string 'solve'
+    std::string tmp = msg.substr(sizeof("solve") -1);
+    while (tmp[0] == ' ' || tmp[0] == '\t')
+    {
+        //advance the space
+        tmp = tmp.substr(1);
+    }
+    if(tmp.find("find-graph-path") != 0){
+        printMsg(out, 1, "");
+    }
+    //advance the string after the sub string 'find-graph-path'
+    std::string tmp = msg.substr(sizeof("find-graph-path") -1);
+    while (tmp[0] == ' ' || tmp[0] == '\t')
+    {
+        //advance the space
+        tmp = tmp.substr(1);
+    }
+    //the defualt algorithem.
+    if(!tmp.compare("")){
+        printMsg(out, 0, "");
+    }else{
+        try{
+            //
+            printMsg(out, 0, "");
+        }
+         catch(const std::exception& e)
+        {
+            printMsg(out, 2, "");
+        }
+    }
+    
+}
+
 void handle::ClientHandle::handleClient(std::uint16_t out,std::uint16_t in) const{
     
     std::atomic_bool stop(false);
