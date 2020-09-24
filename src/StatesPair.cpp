@@ -28,16 +28,16 @@ void statesPair::StatesPair::set(const statesPair::StatesPair& other) {
 std::string statesPair::StatesPair::getStepFromPrevToCur() {
    
     if(m_prevState.equlas(m_curState)) {
-        return "done";
+        return "done.";
     }
     if(m_prevState.getX() +1 == m_curState.getX() && m_prevState.getY() == m_curState.getY()) {
-        return "right";
+        return "right, ";
     }
     if(m_prevState.getX() -1 == m_curState.getX() && m_prevState.getY() == m_curState.getY()) {
-        return "left";
+        return "left, ";
     }
     if(m_prevState.getY() +1 == m_curState.getY() && m_prevState.getX() == m_curState.getX()) {
-        return "up";
+        return "up, ";
     }
-    return "down";
+    return "down, ";
 }

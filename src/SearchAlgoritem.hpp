@@ -13,8 +13,8 @@ namespace searchAlgoritem {
         public:
         maze::Maze getMaze();
         SearchAlgoritm(maze::Maze maze);
-        virtual soloution::Soloution solve();
-         ~SearchAlgoritm();
+        virtual soloution::Soloution solve() = 0;
+        virtual ~SearchAlgoritm();
     };
 
     class BFS_Algoritem : public SearchAlgoritm {
@@ -24,6 +24,6 @@ namespace searchAlgoritem {
         public:
         BFS_Algoritem(maze::Maze maze);
         virtual soloution::Soloution solve();
-         ~BFS_Algoritem();
+        virtual ~BFS_Algoritem();
     };
 }

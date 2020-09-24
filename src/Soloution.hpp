@@ -1,8 +1,11 @@
+#pragma once
+
 #include <string>
 #include <cstdint>
 #include "StatesPair.hpp"
 #include <vector>
 #include "Maze.hpp"
+#include <queue>
 namespace soloution {
     class Soloution {
         private:
@@ -10,7 +13,7 @@ namespace soloution {
         uint32_t m_cost;
 
         public:
-        static soloution::Soloution restoreSoloution(std::vector<statesPair::StatesPair>& pairs, const maze::Maze& maze);
+        static soloution::Soloution restoreSoloution(std::vector<statesPair::StatesPair> &pairs, const maze::Maze &maz);
         Soloution(std::string getPathToSoloution, uint32_t cost);
         std::string getPathToSoloution();
         uint32_t getCost();

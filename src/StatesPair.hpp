@@ -13,7 +13,7 @@ namespace statesPair {
         StatesPair(const state::MazeState cur, const state::MazeState prev);
         state::MazeState getPrev() const;
         state::MazeState getCur() const;
-        void set(statesPair::StatesPair);
+        void set(const statesPair::StatesPair& other);
         std::string getStepFromPrevToCur();
         ~StatesPair();
     };

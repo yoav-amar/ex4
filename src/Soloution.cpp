@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include <iostream>
 
 soloution::Soloution::Soloution(std::string path, uint32_t cost)
     : m_pathToSoloution(path) {
@@ -24,19 +25,21 @@ soloution::Soloution soloution::Soloution::restoreSoloution(
     auto soloution = std::make_unique<Soloution>(path, score);
     return *soloution;
   }
-  auto temp = std::make_unique<statesPair::StatesPair>(pairs.front().getPrev(),
-                                                       pairs.front().getCur());
-  while (!pairs.empty()) {
-    if (pairs.front().getCur().equlas(temp->getPrev())) {
-      score += maze.getMazeAsMatrix().getValue(temp->getCur().getX(),
-                                               temp->getCur().getY());
-      path += temp->getStepFromPrevToCur();
-      temp->set(pairs.front());
-      pairs.pop_back();
-    } else {
-      pairs.pop_back();
+  uint32_t count = pairs.size() -1;
+  auto temp = std::make_unique<statesPair::StatesPair>(pairs.at(count).getPrev(),
+                                                       pairs.at(count).getCur());
+  while (count != -1) {
+        if(pairs.at(count).getCur().equlas(temp->getPrev())) {
+            score += maze.getMazeAsMatrix().getValue(temp->getCur().getX(), temp->getCur().getY());
+            path += temp->getStepFromPrevToCur();   
+            temp->set(pairs.at(count));
+            count-=1;
+        }
+        else {
+            count-=1;
+        }
     }
-  }
-  auto soloution = std::make_unique<Soloution>(path, score);
-  return *soloution;
+    auto soloution = std::make_unique<Soloution>(path, score);
+    return *soloution;
 }
+

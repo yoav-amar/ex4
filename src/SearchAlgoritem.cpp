@@ -15,13 +15,9 @@ searchAlgoritem::BFS_Algoritem::BFS_Algoritem(maze::Maze maze)
 
 maze::Maze searchAlgoritem::SearchAlgoritm::getMaze() { return m_maze;}
 
-searchAlgoritem::SearchAlgoritm::~SearchAlgoritm() {
-    m_maze.~Maze();
-}
+searchAlgoritem::SearchAlgoritm::~SearchAlgoritm() = default;
 
-searchAlgoritem::BFS_Algoritem::~BFS_Algoritem() {
-    m_maze.~Maze();
-}
+searchAlgoritem::BFS_Algoritem::~BFS_Algoritem() = default;
 
 
 
@@ -46,7 +42,7 @@ soloution::Soloution searchAlgoritem::BFS_Algoritem::solve() {
         return soloution::Soloution::restoreSoloution(*usedBooths, m_maze);
     }
     //if this state is not the end state get all the neighbors of this state to the queue(onlt the one we hasn't visited yet)
-    auto neighbors = std::make_unique<std::vector<state::MazeState>>(m_maze.getEndState().getAllPossibleNeighbors(m_maze.getMazeAsMatrix()));
+    auto neighbors = std::make_unique<std::vector<state::MazeState>>(queue->front().getCur().getAllPossibleNeighbors(m_maze.getMazeAsMatrix()));
     for (int  i = 0; i < neighbors->size(); i ++) {
         if(!boothIsAlreadyVisited(*usedBooths,neighbors->at(i))) {
         auto pair = std::make_unique<statesPair::StatesPair>(queue->front().getCur(),neighbors->at(i));
@@ -57,6 +53,6 @@ soloution::Soloution searchAlgoritem::BFS_Algoritem::solve() {
     usedBooths->push_back(queue->front());
     queue->pop();
   }
-  auto failureSoloution = std::make_unique<soloution::Soloution>(-1, "no solotion");
+  auto failureSoloution = std::make_unique<soloution::Soloution>("no solotion", 0);
   return *failureSoloution;
 }
