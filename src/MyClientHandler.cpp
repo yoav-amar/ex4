@@ -10,16 +10,19 @@
 #include <chrono>
 #include "MyClientHandler.hpp"
 
-void printMsg(uint16_t out, uint16_t status, std::string& msg){
-    std::string fullMsg = "Version: 1.0\r\n status: ";
-    fullMsg += status;
-    fullMsg += "\r\n response-length: ";
-    fullMsg += msg.length();
+void printMsg(uint16_t out, int status, const std::string& msg){
+    std::string fullMsg = "Version: 1.0\r\nstatus: ";
+    fullMsg += std::to_string(status);
+    fullMsg += "\r\nresponse-length: ";
+    fullMsg += std::to_string(msg.length());
     if(msg.length() != 0){
         fullMsg += "\r\n\r\n" + msg;
     }
     fullMsg += "\r\n\r\n";
-    if(write(out, fullMsg.data(), fullMsg.length()));
+    //std::cout << fullMsg << std::endl;
+    if(write(out, fullMsg.data(), fullMsg.length()) < 0){
+        //throw exception
+    }
 }
 void handle::ClientHandle::handleClient(std::uint16_t out,std::uint16_t in) const{
     
@@ -36,5 +39,7 @@ void handle::ClientHandle::handleClient(std::uint16_t out,std::uint16_t in) cons
             printMsg(in, 1, tmp);
             close(in);
         }
+        buffer[numBytesRead] = '\0';
+
     }
 }
