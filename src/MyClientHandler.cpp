@@ -10,6 +10,17 @@
 #include <chrono>
 #include "MyClientHandler.hpp"
 
+void printMsg(uint16_t out, uint16_t status, std::string& msg){
+    std::string fullMsg = "Version: 1.0\r\n status: ";
+    fullMsg += status;
+    fullMsg += "\r\n response-length: ";
+    fullMsg += msg.length();
+    if(msg.length() != 0){
+        fullMsg += "\r\n\r\n" + msg;
+    }
+    fullMsg += "\r\n\r\n";
+    if(write(out, fullMsg.data(), fullMsg.length()));
+}
 void handle::ClientHandle::handleClient(std::uint16_t out,std::uint16_t in) const{
     
     std::atomic_bool stop(false);
