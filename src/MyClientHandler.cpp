@@ -22,14 +22,15 @@ void printMsg(uint16_t out, int status, const std::string& msg){
         fullMsg += "\r\n\r\n" + msg;
     }
     fullMsg += "\r\n\r\n";
+    std::cout << fullMsg << std::endl;
     if(write(out, fullMsg.data(), fullMsg.length()) < 0){
         //throw exception
     }
 }
-
-void parseFirstMsg(uint16_t out, std::string& msg){
+bool parseFirstMsg(uint16_t out, std::string& msg){
     if(msg.find("solve") != 0){
         printMsg(out, 1, "");
+        return false;
     }
     //advance the string after the sub string 'solve'
     msg = msg.substr(sizeof("solve") -1);
@@ -39,7 +40,8 @@ void parseFirstMsg(uint16_t out, std::string& msg){
         msg = msg.substr(1);
     }
     if(msg.find("find-graph-path") != 0){
-        printMsg(out, 1, "");
+        printMsg(out, 2, "");
+        return false;
     }
     //advance the string after the sub string 'find-graph-path'
     msg = msg.substr(sizeof("find-graph-path") -1);
@@ -51,17 +53,19 @@ void parseFirstMsg(uint16_t out, std::string& msg){
     //the defualt algorithem.
     if(!msg.compare("")){
         printMsg(out, 0, "");
-    }else{
+        return true;
+    }
+    else{
         try{
             //
             printMsg(out, 0, "");
         }
          catch(const std::exception& e)
         {
-            printMsg(out, 2, "");
+            printMsg(out, 3, "");
         }
     }
-    
+    return true;
 }
 
 void parseSecondMsg(uint16_t out, std::string& msg){
@@ -105,7 +109,9 @@ void handle::ClientHandle::handleClient(std::uint16_t out,std::uint16_t in) cons
             if(message.find("\r\n\r\n") != -1){
                 if(firstMsg){
                     std::string tmp =  message.substr(0, message.find("\r\n\r\n"));
-                    parseFirstMsg(out, tmp);
+                    if(!parseFirstMsg(out, tmp)){
+                        stop = true;
+                    }
                     firstMsg = false;
                 }
                 else
