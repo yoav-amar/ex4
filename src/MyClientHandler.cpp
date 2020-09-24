@@ -11,6 +11,8 @@
 #include <mutex>
 #include "MyClientHandler.hpp"
 
+#define WAIT_FOR_OUT 5
+
 void printMsg(uint16_t out, int status, const std::string& msg){
     std::string fullMsg = "Version: 1.0\r\nstatus: ";
     fullMsg += std::to_string(status);
@@ -67,6 +69,11 @@ void parseSecondMsg(uint16_t out, std::string& msg){
 }
 
 void handle::ClientHandle::handleClient(std::uint16_t out,std::uint16_t in) const{
+    //set timing, the tmp because select is destructive.
+    fd_set set, tmpSet;
+    struct timeval timeout;
+    FD_ZERO(&set);
+    FD_SET(out, &set);
     bool firstMsg=true;
     std::mutex mut;
     std::unique_lock<std::mutex> lck (mut, std::defer_lock);
@@ -74,13 +81,18 @@ void handle::ClientHandle::handleClient(std::uint16_t out,std::uint16_t in) cons
     stop = false;
     std::string buffer(1024, '\0');
     std::string message;
-    const std::string emptyString(1024, '\0');
-    const std::chrono::seconds watingTime (5);
-    lck.lock();
-    auto start = std::chrono::steady_clock::now();
-    auto end = start;
-    lck.unlock();
     while(!stop){
+        //set timout here because select is destructive.
+        tmpSet = set;
+        struct timeval timeout;
+        timeout.tv_sec = WAIT_FOR_OUT;
+        timeout.tv_usec = 0;
+        int waitToRead = select(in + 1, &tmpSet, nullptr, nullptr, &timeout);
+        if(waitToRead <= 0){
+            std::cout << "bey" << std::endl;
+            close(in);
+            return;
+        }
         const auto numBytesRead = read(in, (void*)(buffer.data()), buffer.size() - 1);
         if (numBytesRead < 0) {
             //std::cout << "bey" << std::endl;
