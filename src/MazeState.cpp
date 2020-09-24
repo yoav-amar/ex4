@@ -3,9 +3,10 @@
 #include <vector>
 #include "Matrix.hpp"
 #include <iostream>
-state::MazeState::MazeState(const uint32_t x, const uint32_t y) {
+state::MazeState::MazeState(const uint32_t x, const uint32_t y, double value) {
     m_x = x;
     m_y = y;
+    m_value = value;
 }
 
 uint32_t state::MazeState::getX() const {
@@ -16,37 +17,50 @@ uint32_t state::MazeState::getY() const {
     return m_y;
 }
 
+double state::MazeState::getValue() const {
+    return m_value;
+}
+
 std::vector<state::MazeState> state::MazeState::getAllPossibleNeighbors(const matrix::Matrix& matrix) const {
    std::vector<state::MazeState> neighbors;
     if ((m_x != 0) && (matrix.getValue(m_x - 1, m_y) != -1) ) {
-       auto leftNeighbor = state::MazeState(m_x - 1, m_y);
+       auto leftNeighbor = state::MazeState(m_x - 1, m_y, matrix.getValue(m_x - 1, m_y));
        neighbors.push_back(leftNeighbor);
     }
     if((m_x != matrix.getWidth() - 1) && (matrix.getValue(m_x + 1, m_y) != -1)) {
-        auto rightNeighbor = state::MazeState(m_x + 1, m_y);
+        auto rightNeighbor = state::MazeState(m_x + 1, m_y, matrix.getValue(m_x + 1, m_y));
         neighbors.push_back(rightNeighbor); 
     }
     if ((m_y != 0) && (matrix.getValue(m_x, m_y-1) != -1)) {
-       auto lowerNeighbor = state::MazeState(m_x, m_y - 1);
+       auto lowerNeighbor = state::MazeState(m_x, m_y - 1, matrix.getValue(m_x, m_y-1));
        neighbors.push_back(lowerNeighbor);
     }
     if((m_y != matrix.getWidth() -1) && (matrix.getValue(m_x, m_y + 1))) {
-        auto upperNeighbor = state::MazeState(m_x, m_y + 1);
+        auto upperNeighbor = state::MazeState(m_x, m_y + 1, matrix.getValue(m_x, m_y + 1));
         neighbors.push_back(upperNeighbor);
     }
     return neighbors;
 }
 
+
+
+//did it because it is risky to compare between 2 doubles.
+bool doubles_equal(double x, double y) {
+    return std::abs(x-y) <= 0.0000000001;
+}
+
 bool state::MazeState::equlas(const state::MazeState& other ) const {
-    if (other.getX() == m_x && other.getY() == m_y) {
+    if (other.getX() == m_x && other.getY() == m_y && doubles_equal(other.m_value, m_value)) {
         return true;
     }
     return false;
 }
 
-void state::MazeState::set(const uint32_t x, const uint32_t y) {
+
+void state::MazeState::set(const uint32_t x, const uint32_t y, double value) {
     m_x = x;
     m_y = y;
+    m_value = value;
 }
 
 state::MazeState::~MazeState() = default;
