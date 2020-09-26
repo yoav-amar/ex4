@@ -17,7 +17,7 @@ namespace maze {
          * @param startState is the start State of the maze.
          * @param endState is the end State of the maze.
          */
-        Maze(matrix::Matrix matrix, state::MazeState startState, state::MazeState endState);
+        Maze(const matrix::Matrix& matrix, const state::MazeState& startState, const state::MazeState& endState);
         
         /**
          * @brief Get the Width of the matrix that represent the maze.

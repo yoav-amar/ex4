@@ -1,43 +1,52 @@
 #include "StatesPair.hpp"
-#include <memory>
 #include "MazeState.hpp"
+#include <memory>
 
-statesPair::StatesPair::StatesPair(state::MazeState prev, state::MazeState cur) :
-m_prevState(prev.getX(), prev.getY()), m_curState(cur.getX(), cur.getY()) {}
+statesPair::StatesPair::StatesPair(const state::MazeState &prev,
+                                   const state::MazeState &cur)
+    : m_prevState(prev.getX(), prev.getY(), prev.getValue()),
+      m_curState(cur.getX(), cur.getY(), cur.getValue()) {}
 
-state::MazeState statesPair::StatesPair::getCur() const{
-    auto state = std::make_unique<state::MazeState>(m_curState.getX(), m_curState.getY());
-    return *state;
+state::MazeState statesPair::StatesPair::getCur() const {
+  auto state = std::make_unique<state::MazeState>(
+      m_curState.getX(), m_curState.getY(), m_curState.getValue());
+  return *state;
 }
 
-state::MazeState statesPair::StatesPair::getPrev() const{
-     auto state = std::make_unique<state::MazeState>(m_prevState.getX(), m_prevState.getY());
-     return *state;
+state::MazeState statesPair::StatesPair::getPrev() const {
+  auto state = std::make_unique<state::MazeState>(
+      m_prevState.getX(), m_prevState.getY(), m_prevState.getValue());
+  return *state;
 }
 
 statesPair::StatesPair::~StatesPair() {
-    m_prevState.~MazeState();
-    m_curState.~MazeState();
+  m_prevState.~MazeState();
+  m_curState.~MazeState();
 }
 
-void statesPair::StatesPair::set(const statesPair::StatesPair& other) {
-    m_curState.set(other.m_curState.getX(), other.m_curState.getY());
-    m_prevState.set(other.m_prevState.getX(), other.m_prevState.getY());
+void statesPair::StatesPair::set(const statesPair::StatesPair &other) {
+  m_curState.set(other.getCur().getX(), other.getCur().getY(),
+                 other.getCur().getValue());
+  m_prevState.set(other.getPrev().getX(), other.getPrev().getY(),
+                  other.getPrev().getValue());
 }
 
-std::string statesPair::StatesPair::getStepFromPrevToCur() {
-   
-    if(m_prevState.equlas(m_curState)) {
-        return "";
-    }
-    if(m_prevState.getX() +1 == m_curState.getX() && m_prevState.getY() == m_curState.getY()) {
-        return ",right";
-    }
-    if(m_prevState.getX() -1 == m_curState.getX() && m_prevState.getY() == m_curState.getY()) {
-        return ",left";
-    }
-    if(m_prevState.getY() +1 == m_curState.getY() && m_prevState.getX() == m_curState.getX()) {
-        return ",up";
-    }
-    return ",down";
+std::string statesPair::StatesPair::getStepFromPrevToCur() const {
+
+  if (m_prevState.equlas(m_curState)) {
+    return "";
+  }
+  if (m_prevState.getX() + 1 == m_curState.getX() &&
+      m_prevState.getY() == m_curState.getY()) {
+    return ",right";
+  }
+  if (m_prevState.getX() - 1 == m_curState.getX() &&
+      m_prevState.getY() == m_curState.getY()) {
+    return ",left";
+  }
+  if (m_prevState.getY() + 1 == m_curState.getY() &&
+      m_prevState.getX() == m_curState.getX()) {
+    return ",up";
+  }
+  return ",down";
 }
