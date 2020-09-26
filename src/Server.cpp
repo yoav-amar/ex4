@@ -27,10 +27,6 @@ std::uint16_t serverSide::AbstractServer::getSockfd(){
     return m_sockfd;
 }
 
-std::uint16_t serverSide::AbstractServer::getSockfd(){
-    return m_sockfd;
-}
-
 
 void serverSide::AbstractServer::init(std::uint16_t port){
     sockaddr_in address{};
