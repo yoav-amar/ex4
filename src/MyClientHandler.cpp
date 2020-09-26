@@ -75,7 +75,6 @@ void parseSecondMsg(uint16_t out, std::string& msg){
 void handle::ClientHandle::handleClient(std::uint16_t out,std::uint16_t in) const{
     //set timing, the tmp because select is destructive.
     fd_set set, tmpSet;
-    struct timeval timeout;
     FD_ZERO(&set);
     FD_SET(out, &set);
     bool firstMsg=true;
@@ -93,36 +92,36 @@ void handle::ClientHandle::handleClient(std::uint16_t out,std::uint16_t in) cons
         timeout.tv_usec = 0;
         int waitToRead = select(in + 1, &tmpSet, nullptr, nullptr, &timeout);
         if(waitToRead <= 0){
-            std::cout << "bey" << std::endl;
+            std::cout << "waiting time is over, client is too slow" << std::endl;
             close(in);
             return;
         }
-        const auto numBytesRead = read(in, (void*)(buffer.data()), buffer.size() - 1);
-        if (numBytesRead < 0) {
-            //std::cout << "bey" << std::endl;
-            close(in);
-        }
-        buffer[numBytesRead] = '\0';
-        if(buffer.compare(0, numBytesRead, "\0") != 0){
-            //std::cout << "got" << std::endl;
-            message += buffer.substr(0, numBytesRead);
-            if(message.find("\r\n\r\n") != -1){
-                if(firstMsg){
-                    std::string tmp =  message.substr(0, message.find("\r\n\r\n"));
-                    if(!parseFirstMsg(out, tmp)){
+        if(FD_ISSET(in, &tmpSet)){
+            const auto numBytesRead = read(in, (void*)(buffer.data()), buffer.size() - 1);
+            if (numBytesRead < 0) {
+                close(in);
+                throw std::system_error { errno, std::system_category() };
+            }
+            buffer[numBytesRead] = '\0';
+            if(buffer.compare(0, numBytesRead, "\0") != 0){
+                message += buffer.substr(0, numBytesRead);
+                std::size_t t = -1;
+                if(message.find("\r\n\r\n") != t){
+                    if(firstMsg){
+                        std::string tmp =  message.substr(0, message.find("\r\n\r\n"));
+                        if(!parseFirstMsg(out, tmp)){
+                            stop = true;
+                        }
+                        std::cout << "wait for second message" << std::endl;
+                        firstMsg = false;
+                    }else{
+                        parseSecondMsg(out, message);
                         stop = true;
                     }
-                    firstMsg = false;
+                    message = message.substr(message.find("\r\n\r\n") + sizeof("\r\n\r\n") -1);
                 }
-                else
-                {
-                    parseSecondMsg(out, message);
-                    stop = true;
-                }
-                
-                message = message.substr(message.find("\r\n\r\n") + sizeof("\r\n\r\n") -1);
             }
-        }
+         }
     }
     close(in);
 }
