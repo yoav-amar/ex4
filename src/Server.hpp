@@ -3,13 +3,32 @@
 #include <queue>
 #include "MyClientHandler.hpp"
 namespace serverSide{
+    /**
+     * @brief the interface of the server.
+    */
     class Server
     {
     public:
+        /**
+         * @brief open a new server.
+         * 
+         * @param port the port the server listen to.
+         * @param handeler handel the clients
+         */
         virtual void open(std::uint16_t port,const handle::ClientHandle& handeler) = 0;
+        /**
+         * @brief stop the server.
+         */
         virtual void stop() = 0;
-        virtual ~Server();
+        /**
+         * @brief Destroy the server
+         * 
+         */
+        virtual ~Server() = default;
     };
+    /**
+    * @brief an abstruct class to share code.          
+    */
     class AbstractServer : Server{
         private:
             std::int16_t m_sockfd;
