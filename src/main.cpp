@@ -26,4 +26,13 @@ int main(int argc, char** argv) {
     {
         //error
     }
+    try
+    {
+    int port = std::stoi(argv[1]);
+    server->open(port,handle::ClientHandle());
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
 }
