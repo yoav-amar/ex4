@@ -45,8 +45,8 @@ searchAlgoritem::BestFS_Algoritem::~BestFS_Algoritem() = default;
 double
 searchAlgoritem::A_STAR_Algoritem::heuristicValue(const state::MazeState &state,
                                                   const maze::Maze &maze) {
-  return std::abs(state.getX() - maze.getEndState().getX()) +
-         std::abs(state.getY() - maze.getEndState().getY());
+  return std::abs((int)state.getX() - (int)maze.getEndState().getX()) +
+         std::abs((int)state.getY() - (int)maze.getEndState().getY());
 }
 
 bool searchAlgoritem::SearchAlgoritm::boothIsAlreadyVisited(
@@ -125,20 +125,6 @@ soloution::Soloution searchAlgoritem::DFS_Algoritem::solve() const {
       std::make_unique<soloution::Soloution>("no solotion", 0);
   return *failureSoloution;
 }
-
-// statesPair::StatesPair
-// searchAlgoritem::SearchAlgoritm::get_min(std::vector<pairAndPrice::PairAndPrice>&
-// vec) {
-//     double maxValue = vec[0].getPrice();
-//     uint32_t maxIdx = 0;
-//     for(int  i = 0; i < vec.size(); ++i) {
-//         if(vec[i].getPrice() > vec[maxIdx].getPrice()) {
-//             maxIdx = i;
-//             maxValue = vec[i].getPrice();
-//         }
-//     }
-//     return vec[maxIdx].getPair();
-// }
 
 // bad design has forced me to write this weird thing, im sorry...
 // https://www.youtube.com/watch?v=3tmd-ClpJxA
