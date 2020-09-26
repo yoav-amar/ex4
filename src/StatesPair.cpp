@@ -50,3 +50,31 @@ std::string statesPair::StatesPair::getStepFromPrevToCur() const {
   }
   return ",down";
 }
+
+bool statesPair::StatesPair::operator!=(const statesPair::StatesPair& other) {
+    return  m_curState.getValue() != other.getCur().getValue();
+}
+
+bool statesPair::StatesPair::operator==(const statesPair::StatesPair& other) {
+    return  m_curState.getValue() == other.getCur().getValue();
+}
+
+bool statesPair::StatesPair::operator<=(const statesPair::StatesPair& other) {
+    return  m_curState.getValue() <= other.getCur().getValue();
+}
+
+bool statesPair::StatesPair::operator>=(const statesPair::StatesPair& other) {
+    return  m_curState.getValue() >= other.getCur().getValue();
+}
+
+bool statesPair::StatesPair::operator<(const statesPair::StatesPair& other) {
+    return  m_curState.getValue() < other.getCur().getValue();
+}
+
+bool statesPair::StatesPair::operator>(const statesPair::StatesPair& other) {
+    return  m_curState.getValue() > other.getCur().getValue();
+}
+
+bool statesPair::StatesPair::pairComparator::operator() (const statesPair::StatesPair& pair1, const statesPair::StatesPair& pair2) {
+      return pair1.getCur().getValue() < pair2.getCur().getValue();
+}

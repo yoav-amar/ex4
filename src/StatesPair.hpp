@@ -51,5 +51,18 @@ namespace statesPair {
          * 
          */
         ~StatesPair();
+
+        bool operator==(const statesPair::StatesPair& pair);
+        bool operator!=(const statesPair::StatesPair& pair);
+        bool operator<(const statesPair::StatesPair& pair);
+        bool operator>(const statesPair::StatesPair& pair);
+        bool operator<=(const statesPair::StatesPair& pair);
+        bool operator>=(const statesPair::StatesPair& pair);
+
+
+        struct pairComparator {
+            public :
+            bool operator() (const statesPair::StatesPair& pair1, const statesPair::StatesPair& pair2);
+        };
     };
 }

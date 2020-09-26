@@ -42,15 +42,8 @@ std::vector<state::MazeState> state::MazeState::getAllPossibleNeighbors(const ma
     return neighbors;
 }
 
-
-
-//did it because it is risky to compare between 2 doubles.
-bool doubles_equal(double x, double y) {
-    return std::abs(x-y) <= 0.0000000001;
-}
-
 bool state::MazeState::equlas(const state::MazeState& other ) const {
-    if (other.getX() == m_x && other.getY() == m_y && doubles_equal(other.m_value, m_value)) {
+    if (other.getX() == m_x && other.getY() == m_y ) {
         return true;
     }
     return false;
