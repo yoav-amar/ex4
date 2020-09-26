@@ -238,7 +238,7 @@ matrix::Matrix problem::Matrix::fileToMatrix(const std::string& inputFile){
 }
 
 problem::Search::Search(std::string matrixInformnation, std::string startPoint, std::string endPoint, std::string typeOfAlgoritem = "BFS"): 
-   Problem({""},"") ,m_typeOfAlgoritem(typeOfAlgoritem)
+   Problem({""},"") ,m_typeOfAlgoritem(typeOfAlgoritem) ,
 {
     uint32_t i = 0;
     uint32_t width = 1;
