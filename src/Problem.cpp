@@ -314,12 +314,17 @@ problem::Search::Search(std::string matrixInformnation, std::string startPoint, 
 }
 std::string problem::Search::solveProblem() const {
     std::unique_ptr<searchAlgoritem::SearchAlgoritm> searcher;
-    if (m_typeOfAlgoritem == "DFS") {
-         searcher = std::make_unique<searchAlgoritem::DFS_Algoritem>(&m_maze);
+    if (m_typeOfAlgoritem.compare("DFS") == 0) {
+         searcher = std::make_unique<searchAlgoritem::DFS_Algoritem>(*m_maze);
     }
-    //there will be some other algortiems....
+    else if(m_typeOfAlgoritem.compare("A*") == 0){
+        searcher = std::make_unique<searchAlgoritem::A_STAR_Algoritem>(*m_maze);
+    }
+    else if(m_typeOfAlgoritem.compare("BestFS") == 0){
+        searcher = std::make_unique<searchAlgoritem::BestFS_Algoritem>(*m_maze);
+    }
     else {
-         searcher = std::make_unique<searchAlgoritem::BFS_Algoritem>(&m_maze);
+         searcher = std::make_unique<searchAlgoritem::BFS_Algoritem>(*m_maze);
     }
     auto soloution = std::make_unique<soloution::Soloution>(searcher->solve());
     std::string result = std::to_string(soloution->getCost()) + "," + m_typeOfAlgoritem + soloution->getPathToSoloution();
