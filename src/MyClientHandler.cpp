@@ -22,13 +22,13 @@ void printMsg(uint16_t out, int status, const std::string& msg){
         fullMsg += "\r\n\r\n" + msg;
     }
     fullMsg += "\r\n\r\n";
-    std::cout << fullMsg << std::endl;
     if(write(out, fullMsg.data(), fullMsg.length()) < 0){
-        //throw exception
+        close(out);
+        throw std::system_error { errno, std::system_category() };
     }
 }
 bool parseFirstMsg(uint16_t out, std::string& msg){
-    if(msg.find("solve") != 0){
+    if(msg.find("solve ") != 0 && msg.find("solve\t") != 0){
         printMsg(out, 1, "");
         return false;
     }
@@ -69,6 +69,12 @@ bool parseFirstMsg(uint16_t out, std::string& msg){
 }
 
 void parseSecondMsg(uint16_t out, std::string& msg){
+    if(out){
+
+    }
+    if(!msg.compare("hey")){
+
+    }
 
 }
 
