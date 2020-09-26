@@ -65,21 +65,21 @@ void serverSide::AbstractServer::stop(){
 
 void serverSide::SerialServer::open(std::uint16_t port, const handle::ClientHandle& handeler){
     init(port);
-    sockaddr_in recive{};
-    uint16_t clientSocket, len;
+    int16_t clientSocket, addlen;
     while (isRunning())
     {
-        len = sizeof(recive);
+        sockaddr_in recive{};
+        addlen = sizeof(recive);
         clientSocket = accept(getSockfd(), reinterpret_cast<sockaddr*>(&recive),
-                    reinterpret_cast<socklen_t*>(&len));
+                    reinterpret_cast<socklen_t*>(&addlen));
         if(clientSocket < 0){
             close(getSockfd());
             THROW_SYSTEM_ERROR(); 
         }
+        std::cout << "accepting new client" << std::endl;
         handeler.handleClient(clientSocket, clientSocket);
+        
     }
-    close(getSockfd());
-
 }
 
 void serverSide::ParallelServer::open(std::uint16_t port, const handle::ClientHandle& handeler){
