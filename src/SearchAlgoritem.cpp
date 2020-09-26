@@ -1,7 +1,6 @@
 #include "SearchAlgoritem.hpp"
 #include "Maze.hpp"
 #include "MazeState.hpp"
-#include "PairAndPrice.hpp"
 #include "Soloution.hpp"
 #include "StatesPairTester.hpp"
 #include <iostream>
