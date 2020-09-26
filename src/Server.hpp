@@ -5,8 +5,6 @@
 namespace serverSide{
     class Server
     {
-    private:
-        
     public:
         virtual void open(std::uint16_t port,const handle::ClientHandle& handeler) = 0;
         virtual void stop() = 0;
