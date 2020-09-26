@@ -310,16 +310,16 @@ problem::Search::Search(std::string matrixInformnation, std::string startPoint, 
     auto startState = std::make_unique<state::MazeState>(startPoint_x_asInt, startPoint_y_asInt, result->getValue(startPoint_x_asInt, startPoint_y_asInt));
     auto endState = std::make_unique<state::MazeState>(endPoint_x_asInt, endPoint_y_asInt, result->getValue(endPoint_x_asInt, endPoint_y_asInt));
 
-    maze::Maze m_maze(*result, *startState, *endState);
+    m_maze = new maze::Maze(*result, *startState, *endState);
 }
 std::string problem::Search::solveProblem() const {
     std::unique_ptr<searchAlgoritem::SearchAlgoritm> searcher;
     if (m_typeOfAlgoritem == "DFS") {
-         searcher = std::make_unique<searchAlgoritem::DFS_Algoritem>(m_maze);
+         searcher = std::make_unique<searchAlgoritem::DFS_Algoritem>(&m_maze);
     }
     //there will be some other algortiems....
     else {
-         searcher = std::make_unique<searchAlgoritem::BFS_Algoritem>(m_maze);
+         searcher = std::make_unique<searchAlgoritem::BFS_Algoritem>(&m_maze);
     }
     auto soloution = std::make_unique<soloution::Soloution>(searcher->solve());
     std::string result = std::to_string(soloution->getCost()) + "," + m_typeOfAlgoritem + soloution->getPathToSoloution();
