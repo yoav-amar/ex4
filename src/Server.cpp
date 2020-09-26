@@ -5,26 +5,31 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <mutex>
+#include <queue>
 #include <thread>
 #include <iostream>
 #include <string_view>
 #include <system_error>
 
-#include "ClientHandle.hpp"
+#include "MyClientHandler.hpp"
 #include "Server.hpp"
 
-#define BACKLOG 20
+#define LISTEN_SIZE 20
+#define THREAD_POOL_SIZE 10
 
 #define THROW_SYSTEM_ERROR() \
     throw std::system_error { errno, std::system_category() }
+
+std::mutex g_mut;
 
 std::uint16_t serverSide::AbstractServer::getSockfd(){
     return m_sockfd;
 }
 
+
 void serverSide::AbstractServer::init(std::uint16_t port){
-     
- 
+    sockaddr_in address{};
     m_sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (m_sockfd < 0) {
         THROW_SYSTEM_ERROR();
@@ -40,7 +45,7 @@ void serverSide::AbstractServer::init(std::uint16_t port){
         THROW_SYSTEM_ERROR();
     }
 
-    if(listen(m_sockfd, BACKLOG) < 0){
+    if(listen(m_sockfd, LISTEN_SIZE) < 0){
         close(m_sockfd);
         THROW_SYSTEM_ERROR();
     }
@@ -57,38 +62,58 @@ void serverSide::AbstractServer::stop(){
 
 void serverSide::SerialServer::open(std::uint16_t port, const handle::ClientHandle& handeler){
     init(port);
-    sockaddr_in recive{};
-    uint16_t clientSocket, len;
+    int16_t clientSocket, addlen;
     while (isRunning())
     {
-        len = sizeof(recive);
+        sockaddr_in recive{};
+        addlen = sizeof(recive);
         clientSocket = accept(getSockfd(), reinterpret_cast<sockaddr*>(&recive),
-                    reinterpret_cast<socklen_t*>(&len));
+                    reinterpret_cast<socklen_t*>(&addlen));
         if(clientSocket < 0){
             close(getSockfd());
             THROW_SYSTEM_ERROR(); 
         }
+        std::cout << "accepting new client" << std::endl;
         handeler.handleClient(clientSocket, clientSocket);
+        
     }
-    close(getSockfd());
+}
 
+void serverSide::ParallelServer::threadFunc(std::queue<std::uint16_t>& sockQueue, const handle::ClientHandle& handeler){
+    while (isRunning())
+    {
+        std::unique_lock<std::mutex> lck (g_mut);
+        if(!sockQueue.empty()){
+            std::uint16_t clientSock =sockQueue.front();
+            sockQueue.pop();
+            lck.unlock();
+            handeler.handleClient(clientSock, clientSock);
+        }
+        
+    }
+    
 }
 
 void serverSide::ParallelServer::open(std::uint16_t port, const handle::ClientHandle& handeler){
+    std::vector<std::thread> threadPool;
+    std::queue<std::uint16_t> sockQueue;
+    for(uint16_t i =0; i < THREAD_POOL_SIZE; ++i){
+            threadPool.push_back(std::thread(&serverSide::ParallelServer::threadFunc, this,std::ref(sockQueue),std::ref(handeler)));
+    }
     init(port);
-    sockaddr_in recive{};
-    int clientSocket, len;
+    int clientSocket, addlen;
+    std::unique_lock<std::mutex> lock(g_mut, std::defer_lock);
     while (isRunning())
     {
-        len = sizeof(recive);
+        sockaddr_in recive{};
+        addlen = sizeof(recive);
         clientSocket = accept(getSockfd(), reinterpret_cast<sockaddr*>(&recive),
-                    reinterpret_cast<socklen_t*>(&len));
+                    reinterpret_cast<socklen_t*>(&addlen));
         if(clientSocket < 0){
             close(getSockfd());
             THROW_SYSTEM_ERROR(); 
         }
-        //handle
-        
+        std::cout << "accepting new client" << std::endl;
+        sockQueue.push(clientSocket);
     }
-    close(getSockfd());
 }
