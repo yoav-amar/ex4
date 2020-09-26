@@ -1,12 +1,16 @@
-#include "ClientHandle.hpp"
-#include "CacheException.hpp"
-int main(int argc, char** argv) {
-    try{
-    client::ClientHandle* client = new client::ClientHandle(argc, argv);
-    client->solve();
-    }
-    catch(cacheExcption::CacheExcpetion *error){
-        error->printErrorMessage();
-    }
+#include "Server.hpp"
 
+int main(int argc, char** argv) {
+    serverSide::Server* server;
+    if(argc == 3){
+        std::string kindOfServer = argv[2];
+        initThreeArgs(server, kindOfServer);
+    }
+    else if(argc == 2){
+        server = new serverSide::ParallelServer();
+    }
+    else
+    {
+        //error
+    }
 }
