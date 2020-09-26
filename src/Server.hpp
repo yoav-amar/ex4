@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <queue>
 #include "MyClientHandler.hpp"
 namespace serverSide{
     class Server
@@ -7,15 +8,15 @@ namespace serverSide{
     private:
         
     public:
-        virtual void open(std::uint16_t port,const const handle::ClientHandle& handeler) = 0;
+        virtual void open(std::uint16_t port,const handle::ClientHandle& handeler) = 0;
         virtual void stop() = 0;
+        virtual ~Server();
     };
     class AbstractServer : Server{
         private:
-            std::uint16_t m_sockfd;
-            bool m_isStop;
+            std::int16_t sockfd;
+            bool isStop;
         protected:
-            struct sockaddr_in address;
             std::uint16_t getSockfd();
             void init(std::uint16_t port);
             bool isRunning();
@@ -24,11 +25,15 @@ namespace serverSide{
         
     };
     class SerialServer : AbstractServer{
-        void open(std::uint16_t port, const handle::ClientHandle& handeler);
+        public:
+            void open(std::uint16_t port, const handle::ClientHandle& handeler);
     };
 
     class ParallelServer : AbstractServer{
-        void open (std::uint16_t port, const handle::ClientHandle& handeler);
+        private:
+            void threadFunc(std::queue<std::uint16_t>& sockQueue, const handle::ClientHandle& handeler);
+        public:
+            void open (std::uint16_t port, const handle::ClientHandle& handeler);
     };
     
 }
