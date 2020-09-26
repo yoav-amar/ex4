@@ -5,6 +5,7 @@
 #include <atomic>
 #include <mutex>
 #include "MyClientHandler.hpp"
+#include "Problem.hpp"
 
 #define WAIT_FOR_OUT 5
 
@@ -17,12 +18,33 @@ void printMsg(uint16_t out, int status, const std::string& msg){
         fullMsg += "\r\n\r\n" + msg;
     }
     fullMsg += "\r\n\r\n";
+
     if(write(out, fullMsg.data(), fullMsg.length()) < 0){
         close(out);
         throw std::system_error { errno, std::system_category() };
     }
 }
-bool parseFirstMsg(uint16_t out, std::string& msg){
+  /**
+   * @brief parse the rest of the problem to get the 
+   * type of problem.
+   * return true if it is a valid algorithem, false otherwise.
+   *
+   * @param msg the rest of the message.
+   * @return bool
+   */
+bool parseTypeOfProblem(std::string& msg){
+    while (msg[0] == ' ' || msg[0] == '\t')
+    {
+        //advance the space
+        msg = msg.substr(1);
+    }
+    if(msg.compare("A*") != 0 && msg.compare("BFS") != 0
+                     && msg.compare("DFS") != 0 && msg.compare("BestFS") != 0){
+                         return false;
+                     }
+    return true;
+}
+bool parseFirstMsg(uint16_t out, std::string& msg, std::string & typeOfAlgorithem){
     if(msg.find("solve ") != 0 && msg.find("solve\t") != 0){
         printMsg(out, 1, "");
         return false;
@@ -47,30 +69,64 @@ bool parseFirstMsg(uint16_t out, std::string& msg){
     }
     //the defualt algorithem.
     if(!msg.compare("")){
+        typeOfAlgorithem = "BFS";
         printMsg(out, 0, "");
         return true;
     }
     else{
-        try{
-            //
+        if(parseTypeOfProblem(msg)){
+            typeOfAlgorithem = msg;
             printMsg(out, 0, "");
+            return true;
         }
-         catch(const std::exception& e)
-        {
-            printMsg(out, 3, "");
-        }
+        printMsg(out, 3, "");
+        return false;
     }
-    return true;
 }
 
-void parseSecondMsg(uint16_t out, std::string& msg){
-    if(out){
-
+void parseSecondMsg(uint16_t out, std::string& msg, std::string& typeOfAlgorithem){
+    std::cout << msg << std::endl;
+    uint16_t numOfLinesLeft = 0;
+        for(uint32_t j  = 0; j < msg.size(); ++j){
+        if(msg[j] == '\n'){
+            ++numOfLinesLeft;
+        }
     }
-    if(!msg.compare("hey")){
-
+    //go through all the message.
+    int32_t i=0;
+    std::string matrixString;
+    std::string entryPoint;
+    std::string endPoint;
+    //two lines for break, one line to entry point and one line to end point.
+    while (numOfLinesLeft > 4)
+    {
+        matrixString +=msg[i];
+        if(msg[i] == '\n'){
+            --numOfLinesLeft;
+        }
+        ++i;
     }
-
+    while (msg[i] != '\r' && msg[i + 1] != '\n')
+    {
+        entryPoint += msg[i];
+        ++i;
+    }
+    //advance the counter to the next line.
+    i +=2;
+    while (msg[i] != '\r' && msg[i + 1] != '\n')
+    {
+        endPoint += msg[i];
+        ++i;
+    }
+    problem::Search searcher(matrixString, typeOfAlgorithem, entryPoint, endPoint);
+    std::string result; 
+    try{
+        result = searcher.solveProblem();
+        printMsg(out, 0, result);
+    }catch(...){
+        printMsg(out, 4, "");
+    }
+    
 }
 
 void handle::ClientHandle::handleClient(std::uint16_t out,std::uint16_t in) const{
@@ -84,7 +140,7 @@ void handle::ClientHandle::handleClient(std::uint16_t out,std::uint16_t in) cons
     std::atomic_bool stop;
     stop = false;
     std::string buffer(1024, '\0');
-    std::string message;
+    std::string message, typeOfAlgorithem;
     while(!stop){
         //set timout here because select is destructive.
         tmpSet = set;
@@ -110,13 +166,13 @@ void handle::ClientHandle::handleClient(std::uint16_t out,std::uint16_t in) cons
                 if(message.find("\r\n\r\n") != t){
                     if(firstMsg){
                         std::string tmp =  message.substr(0, message.find("\r\n\r\n"));
-                        if(!parseFirstMsg(out, tmp)){
+                        if(!parseFirstMsg(out, tmp, typeOfAlgorithem)){
                             stop = true;
                         }
-                        std::cout << "wait for second message" << std::endl;
                         firstMsg = false;
                     }else{
-                        parseSecondMsg(out, message);
+                        std::cout << "parse second msg" << std::endl;
+                        parseSecondMsg(out, message, typeOfAlgorithem);
                         stop = true;
                     }
                     message = message.substr(message.find("\r\n\r\n") + sizeof("\r\n\r\n") -1);
@@ -124,5 +180,6 @@ void handle::ClientHandle::handleClient(std::uint16_t out,std::uint16_t in) cons
             }
          }
     }
+    std::cout << "bey" << std::endl;
     close(in);
 }

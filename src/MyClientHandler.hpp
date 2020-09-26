@@ -2,7 +2,6 @@
 
 #include <iostream>
 
-#include "CacheManager.hpp"
 #include "Problem.hpp"
 
 namespace handle{
