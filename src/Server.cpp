@@ -82,6 +82,21 @@ void serverSide::SerialServer::open(std::uint16_t port, const handle::ClientHand
     }
 }
 
+void serverSide::ParallelServer::threadFunc(std::queue<std::uint16_t>& sockQueue, const handle::ClientHandle& handeler){
+    while (isRunning())
+    {
+        std::unique_lock<std::mutex> lck (g_mut);
+        if(!sockQueue.empty()){
+            std::uint16_t clientSock =sockQueue.front();
+            sockQueue.pop();
+            lck.unlock();
+            handeler.handleClient(clientSock, clientSock);
+        }
+        
+    }
+    
+}
+
 void serverSide::ParallelServer::open(std::uint16_t port, const handle::ClientHandle& handeler){
     init(port);
     sockaddr_in recive{};
