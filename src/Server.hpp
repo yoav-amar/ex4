@@ -34,10 +34,28 @@ namespace serverSide{
             std::int16_t m_sockfd;
             bool m_isStop;
         protected:
+        /**
+         * @brief return the socket file descriptor.
+         * 
+         * @return std::uint16_t
+         */
             std::uint16_t getSockfd();
+        /**
+         * @brief initialize the server.
+         * 
+         * @param port the port the server listen to.
+         */
             void init(std::uint16_t port);
+        /**
+         * @brief return true if the program should still running.
+         * 
+         * @return bool
+         */
             bool isRunning();
         public:
+        /**
+         * @brief stop the server.
+         */
             void stop();
         
     };
