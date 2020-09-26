@@ -15,7 +15,7 @@
 #include "MyClientHandler.hpp"
 #include "Server.hpp"
 
-#define BACKLOG 20
+#define LISTEN_SIZE 20
 
 #define THROW_SYSTEM_ERROR() \
     throw std::system_error { errno, std::system_category() }
@@ -26,9 +26,9 @@ std::uint16_t serverSide::AbstractServer::getSockfd(){
     return m_sockfd;
 }
 
+
 void serverSide::AbstractServer::init(std::uint16_t port){
-     
- 
+    sockaddr_in address{};
     m_sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (m_sockfd < 0) {
         THROW_SYSTEM_ERROR();
@@ -44,7 +44,7 @@ void serverSide::AbstractServer::init(std::uint16_t port){
         THROW_SYSTEM_ERROR();
     }
 
-    if(listen(m_sockfd, BACKLOG) < 0){
+    if(listen(m_sockfd, LISTEN_SIZE) < 0){
         close(m_sockfd);
         THROW_SYSTEM_ERROR();
     }
