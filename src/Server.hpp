@@ -61,6 +61,12 @@ namespace serverSide{
     };
     class SerialServer : AbstractServer{
         public:
+        /**
+         * @brief open a new server.
+         * 
+         * @param port the port the server listen to.
+         * @param handeler handel the clients
+         */
             void open(std::uint16_t port, const handle::ClientHandle& handeler);
     };
 
