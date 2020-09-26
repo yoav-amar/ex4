@@ -29,7 +29,7 @@ namespace serverSide{
     /**
     * @brief an abstruct class to share code.          
     */
-    class AbstractServer : Server{
+    class AbstractServer : public Server{
         private:
             std::int16_t m_sockfd;
             bool m_isStop;
@@ -59,10 +59,11 @@ namespace serverSide{
             void stop();
         
     };
+
     /**
     * @brief a server that handle clients one after the other.          
     */
-    class SerialServer : AbstractServer{
+    class SerialServer : public AbstractServer{
         public:
         /**
          * @brief open a new server.
@@ -72,11 +73,12 @@ namespace serverSide{
          */
             void open(std::uint16_t port, const handle::ClientHandle& handeler);
     };
+    
     /**
     * @brief a server that handle clients simultaneously. 
     * use threads.         
     */
-    class ParallelServer : AbstractServer{
+    class ParallelServer : public AbstractServer{
         private:
         /**
          * @brief an infinate loop func that the threads call.
