@@ -14,8 +14,8 @@ namespace serverSide{
     };
     class AbstractServer : Server{
         private:
-            std::int16_t sockfd;
-            bool isStop;
+            std::int16_t m_sockfd;
+            bool m_isStop;
         protected:
             std::uint16_t getSockfd();
             void init(std::uint16_t port);
