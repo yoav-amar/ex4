@@ -182,7 +182,7 @@ std::string problem::Hash::solveCrc() const{
     
 }
 bool isNumber(char ch){
-    if(ch <= 'p' && ch >= '0'){
+    if((ch <= 'p' && ch >= '0') || ch == 'b'){
         return true;
     }
     return false;
@@ -267,7 +267,12 @@ problem::Search::Search(std::string matrixInformnation, std::string startPoint, 
             {
                 ++place;
             }
-            double tmp = std::stod(matrixInformnation.substr(place));
+            double tmp;
+            if(matrixInformnation[place] == 'b'){
+                tmp = -1;
+            }else{
+                tmp = std::stod(matrixInformnation.substr(place));
+            }
             while (isNumber(matrixInformnation[place]) || matrixInformnation[place] == '.')
             {
                 ++place;
