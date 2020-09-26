@@ -104,7 +104,7 @@ namespace searchAlgoritem {
           * @param pair 
           * @return double 
           */
-         double heuristicValue(const statesPair::StatesPair& pair) const;
+         double static heuristicValue(const state::MazeState& state, const maze::Maze& maze);
 
 
         public:
@@ -128,6 +128,28 @@ namespace searchAlgoritem {
          */
         virtual ~A_STAR_Algoritem();
 
+    };
+
+    class BestFS_Algoritem : public SearchAlgoritm {
+         /**
+         * @brief Construct a new a star algoritem object.
+         * 
+         * @param maze is a maze to define as the m_maze.
+         */
+        BestFS_Algoritem(const maze::Maze& maze);
+
+        /**
+         * @brief solve the maze with A* algoritem.
+         * 
+         * @return soloution::Soloution is the solotion of the maze.
+         */
+        virtual soloution::Soloution solve() const ;
+
+        /**
+         * @brief Destroy the a star algoritem object
+         * 
+         */
+        virtual ~BestFS_Algoritem();
     };
 
 }

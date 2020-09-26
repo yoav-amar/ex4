@@ -237,7 +237,7 @@ matrix::Matrix problem::Matrix::fileToMatrix(const std::string& inputFile){
     return *result;
 }
 
-problem::Search::Search(std::string matrixInformnation, std::string typeOfAlgoritem = "BFS", std::string startPoint, std::string endPoint): 
+problem::Search::Search(std::string matrixInformnation, std::string startPoint, std::string endPoint, std::string typeOfAlgoritem = "BFS"): 
    Problem({""},"") ,m_typeOfAlgoritem(typeOfAlgoritem)
 {
     uint32_t i = 0;
@@ -307,8 +307,8 @@ problem::Search::Search(std::string matrixInformnation, std::string typeOfAlgori
     uint32_t endPoint_x_asInt = std::stoi(startPoint_x_asString);
     uint32_t endPoint_y_asInt = std::stoi(startPoint_x_asString);
 
-    auto startState = std::make_unique<state::MazeState>(startPoint_x_asInt, startPoint_y_asInt);
-    auto endState = std::make_unique<state::MazeState>(endPoint_x_asInt, endPoint_y_asInt);
+    auto startState = std::make_unique<state::MazeState>(startPoint_x_asInt, startPoint_y_asInt, result->getValue(startPoint_x_asInt, startPoint_y_asInt));
+    auto endState = std::make_unique<state::MazeState>(endPoint_x_asInt, endPoint_y_asInt, result->getValue(endPoint_x_asInt, endPoint_y_asInt));
 
     maze::Maze m_maze(*result, *startState, *endState);
 }
@@ -322,6 +322,6 @@ std::string problem::Search::solveProblem() const {
          searcher = std::make_unique<searchAlgoritem::BFS_Algoritem>(m_maze);
     }
     auto soloution = std::make_unique<soloution::Soloution>(searcher->solve());
-    std::string result = std::to_string(soloution->getCost()) + "," + m_typeOfAlgoritem + "," + soloution->getPathToSoloution();
+    std::string result = std::to_string(soloution->getCost()) + "," + m_typeOfAlgoritem + soloution->getPathToSoloution();
     return result;
 }

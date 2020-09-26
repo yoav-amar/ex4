@@ -1,6 +1,7 @@
 #include "SearchAlgoritem.hpp"
 #include "Maze.hpp"
 #include "MazeState.hpp"
+#include "PairAndPrice.hpp"
 #include "Soloution.hpp"
 #include "StatesPairTester.hpp"
 #include <iostream>
@@ -8,18 +9,28 @@
 #include <memory>
 #include <queue>
 #include <stack>
-#include "PairAndPrice.hpp"
 
-searchAlgoritem::SearchAlgoritm::SearchAlgoritm(maze::Maze maze)
-    : m_maze(maze) {}
+searchAlgoritem::SearchAlgoritm::SearchAlgoritm(const maze::Maze &maze)
+    : m_maze(maze.getMazeAsMatrix(), maze.getstartState(), maze.getEndState()) {
+}
 
-searchAlgoritem::BFS_Algoritem::BFS_Algoritem(maze::Maze maze)
+searchAlgoritem::BFS_Algoritem::BFS_Algoritem(const maze::Maze &maze)
     : SearchAlgoritm(maze) {}
 
-searchAlgoritem::DFS_Algoritem::DFS_Algoritem(maze::Maze maze)
+searchAlgoritem::DFS_Algoritem::DFS_Algoritem(const maze::Maze &maze)
     : SearchAlgoritm(maze) {}
 
-maze::Maze searchAlgoritem::SearchAlgoritm::getMaze() { return m_maze; }
+searchAlgoritem::A_STAR_Algoritem::A_STAR_Algoritem(const maze::Maze &maze)
+    : SearchAlgoritm(maze) {}
+
+searchAlgoritem::BestFS_Algoritem::BestFS_Algoritem(const maze::Maze &maze)
+    : SearchAlgoritm(maze) {}
+
+maze::Maze searchAlgoritem::SearchAlgoritm::getMaze() const {
+  auto mazeCopy = std::make_unique<maze::Maze>(
+      m_maze.getMazeAsMatrix(), m_maze.getstartState(), m_maze.getEndState());
+  return *mazeCopy;
+}
 
 searchAlgoritem::SearchAlgoritm::~SearchAlgoritm() = default;
 
@@ -27,22 +38,16 @@ searchAlgoritem::BFS_Algoritem::~BFS_Algoritem() = default;
 
 searchAlgoritem::DFS_Algoritem::~DFS_Algoritem() = default;
 
-searchAlgoritem::A_STAR_Algoritem::A_STAR_Algoritem(maze::Maze maze)
-    : SearchAlgoritm(maze) {}
-
 searchAlgoritem::A_STAR_Algoritem::~A_STAR_Algoritem() = default;
 
-maze::Maze searchAlgoritem::SearchAlgoritm::getMaze() {
-    return m_maze;
-}
+searchAlgoritem::BestFS_Algoritem::~BestFS_Algoritem() = default;
 
-double searchAlgoritem::SearchAlgoritm::heuristicValue(const statesPair::StatesPair& pair) {
-  return std::abs(pair.getCur().getX() - m_maze.getEndState().getX()) +
-         std::abs(pair.getCur().getY() - m_maze.getEndState().getY()) +
-         m_maze.getMazeAsMatrix().getValue(pair.getCur().getX(),
-                                         pair.getCur().getY());
+double
+searchAlgoritem::A_STAR_Algoritem::heuristicValue(const state::MazeState &state,
+                                                  const maze::Maze &maze) {
+  return std::abs(state.getX() - maze.getEndState().getX()) +
+         std::abs(state.getY() - maze.getEndState().getY());
 }
-
 
 bool searchAlgoritem::SearchAlgoritm::boothIsAlreadyVisited(
     const std::vector<statesPair::StatesPair> &booths,
@@ -55,7 +60,7 @@ bool searchAlgoritem::SearchAlgoritm::boothIsAlreadyVisited(
   return false;
 }
 
-soloution::Soloution searchAlgoritem::BFS_Algoritem::solve() {
+soloution::Soloution searchAlgoritem::BFS_Algoritem::solve() const {
   auto queue = std::make_unique<std::queue<statesPair::StatesPair>>();
   auto usedBooths = std::make_unique<std::vector<statesPair::StatesPair>>();
   auto startingBooth = std::make_unique<statesPair::StatesPair>(
@@ -88,7 +93,7 @@ soloution::Soloution searchAlgoritem::BFS_Algoritem::solve() {
   return *failureSoloution;
 }
 
-soloution::Soloution searchAlgoritem::DFS_Algoritem::solve() {
+soloution::Soloution searchAlgoritem::DFS_Algoritem::solve() const {
   auto stack = std::make_unique<std::stack<statesPair::StatesPair>>();
   auto usedBooths = std::make_unique<std::vector<statesPair::StatesPair>>();
   auto startingBooth = std::make_unique<statesPair::StatesPair>(
@@ -121,45 +126,100 @@ soloution::Soloution searchAlgoritem::DFS_Algoritem::solve() {
   return *failureSoloution;
 }
 
-statesPair::StatesPair searchAlgoritem::SearchAlgoritm::get_min(std::vector<pairAndPrice::PairAndPrice>& vec) {
-    double maxValue = vec[0].getPrice();
-    uint32_t maxIdx = 0;
-    for(int  i = 0; i < vec.size(); ++i) {
-        if(vec[i].getPrice() > vec[maxIdx].getPrice()) {
-            maxIdx = i;
-            maxValue = vec[i].getPrice();
-        }
-    }
-    return vec[maxIdx].getPair();
-}
+// statesPair::StatesPair
+// searchAlgoritem::SearchAlgoritm::get_min(std::vector<pairAndPrice::PairAndPrice>&
+// vec) {
+//     double maxValue = vec[0].getPrice();
+//     uint32_t maxIdx = 0;
+//     for(int  i = 0; i < vec.size(); ++i) {
+//         if(vec[i].getPrice() > vec[maxIdx].getPrice()) {
+//             maxIdx = i;
+//             maxValue = vec[i].getPrice();
+//         }
+//     }
+//     return vec[maxIdx].getPair();
+// }
 
-
-//bad design has forced me to write this weird thing, im sorry...  https://www.youtube.com/watch?v=3tmd-ClpJxA
-soloution::Soloution searchAlgoritem::A_STAR_Algoritem::solve() {
-  auto map = std::make_unique<std::vector<pairAndPrice::PairAndPrice>>();
+// bad design has forced me to write this weird thing, im sorry...
+// https://www.youtube.com/watch?v=3tmd-ClpJxA
+soloution::Soloution searchAlgoritem::A_STAR_Algoritem::solve() const {
+  auto priorityQueue = std::make_unique<std::priority_queue<
+      statesPair::StatesPair, std::vector<statesPair::StatesPair>,
+      statesPair::StatesPair::pairComparator>>();
   auto usedBooths = std::make_unique<std::vector<statesPair::StatesPair>>();
   auto startingBooth = std::make_unique<statesPair::StatesPair>(
       m_maze.getstartState(), m_maze.getstartState());
-      double price = heuristicValue(*startingBooth);
-    map->push_back(pairAndPrice::PairAndPrice(*startingBooth, price));
-  while (!map->empty()) {
+  double heuristic_value = startingBooth->getCur().getValue() +
+                           heuristicValue(startingBooth->getCur(), m_maze);
+  auto heuristic_startState = std::make_unique<state::MazeState>(
+      startingBooth->getCur().getX(), startingBooth->getCur().getY(),
+      heuristicValue);
+  auto heuristic_startingBooth = std::make_unique<statesPair::StatesPair>(
+      *heuristic_startState, *heuristic_startState);
+
+  priorityQueue->push(*heuristic_startingBooth);
+
+  while (!priorityQueue->empty()) {
     // if we got to the end state find the soloution...
-    if (get_min(*map).getCur().equlas(m_maze.getEndState())) {
-      usedBooths->push_back(map->top());
+    if (priorityQueue->top().getCur().equlas(m_maze.getEndState())) {
+      auto regular_pair = std::make_unique<statesPair::StatesPair>(priorityQueue->top().getPrev(), priorityQueue->top().getCur(), priorityQueue->top().getCur().getValue()- heuristicValue(priorityQueue->top().getCur(), m_maze));
+      usedBooths->push_back(*regular_pair);
       return soloution::Soloution::restoreSoloution(*usedBooths, m_maze);
     }
     // if this state is not the end state get all the neighbors of this state to
     // the queue(onlt the one we hasn't visited yet)
     auto neighbors = std::make_unique<std::vector<state::MazeState>>(
-        map->top().getCur().getAllPossibleNeighbors(m_maze.getMazeAsMatrix()));
+        priorityQueue->top().getCur().getAllPossibleNeighbors(
+            m_maze.getMazeAsMatrix()));
     // move the top element from the queue to the usedElements vector.
-    usedBooths->push_back(map->top());
-    map->pop();
+    usedBooths->push_back(priorityQueue->top());
+    priorityQueue->pop();
+    for (int i = 0; i < neighbors->size(); i++) {
+      auto heuristic_neighbor = std::make_unique<state::MazeState>(
+          neighbors->at(i).getX(), neighbors->at(i).getY(),
+          neighbors->at(i).getValue() +
+              heuristicValue(neighbors->at(i), m_maze));
+      if (!boothIsAlreadyVisited(*usedBooths, *heuristic_neighbor)) {
+        auto pair = std::make_unique<statesPair::StatesPair>(
+            priorityQueue->top().getCur(), *heuristic_neighbor);
+        priorityQueue->push(*pair);
+      }
+    }
+  }
+  auto failureSoloution =
+      std::make_unique<soloution::Soloution>("no solotion", 0);
+  return *failureSoloution;
+}
+
+soloution::Soloution searchAlgoritem::BestFS_Algoritem::solve() const {
+  auto priorityQueue = std::make_unique<std::priority_queue<
+      statesPair::StatesPair, std::vector<statesPair::StatesPair>,
+      statesPair::StatesPair::pairComparator>>();
+  auto usedBooths = std::make_unique<std::vector<statesPair::StatesPair>>();
+  auto startingBooth = std::make_unique<statesPair::StatesPair>(
+      m_maze.getstartState(), m_maze.getstartState());
+
+  priorityQueue->push(*startingBooth);
+
+  while (!priorityQueue->empty()) {
+    // if we got to the end state find the soloution...
+    if (priorityQueue->top().getCur().equlas(m_maze.getEndState())) {
+      usedBooths->push_back(priorityQueue->top());
+      return soloution::Soloution::restoreSoloution(*usedBooths, m_maze);
+    }
+    // if this state is not the end state get all the neighbors of this state to
+    // the queue(onlt the one we hasn't visited yet)
+    auto neighbors = std::make_unique<std::vector<state::MazeState>>(
+        priorityQueue->top().getCur().getAllPossibleNeighbors(
+            m_maze.getMazeAsMatrix()));
+    // move the top element from the queue to the usedElements vector.
+    usedBooths->push_back(priorityQueue->top());
+    priorityQueue->pop();
     for (int i = 0; i < neighbors->size(); i++) {
       if (!boothIsAlreadyVisited(*usedBooths, neighbors->at(i))) {
         auto pair = std::make_unique<statesPair::StatesPair>(
-            map->top().getCur(), neighbors->at(i));
-        map->push(*pair);
+            priorityQueue->top().getCur(), neighbors->at(i));
+        priorityQueue->push(*pair);
       }
     }
   }
