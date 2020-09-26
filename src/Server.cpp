@@ -5,18 +5,22 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <mutex>
+#include <queue>
 #include <thread>
 #include <iostream>
 #include <string_view>
 #include <system_error>
 
-#include "ClientHandle.hpp"
+#include "MyClientHandler.hpp"
 #include "Server.hpp"
 
 #define BACKLOG 20
 
 #define THROW_SYSTEM_ERROR() \
     throw std::system_error { errno, std::system_category() }
+
+std::mutex g_mut;
 
 std::uint16_t serverSide::AbstractServer::getSockfd(){
     return m_sockfd;
