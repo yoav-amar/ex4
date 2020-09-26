@@ -16,6 +16,7 @@
 #include "Server.hpp"
 
 #define LISTEN_SIZE 20
+#define THREAD_POOL_SIZE 10
 
 #define THROW_SYSTEM_ERROR() \
     throw std::system_error { errno, std::system_category() }
@@ -98,20 +99,25 @@ void serverSide::ParallelServer::threadFunc(std::queue<std::uint16_t>& sockQueue
 }
 
 void serverSide::ParallelServer::open(std::uint16_t port, const handle::ClientHandle& handeler){
+    std::vector<std::thread> threadPool;
+    std::queue<std::uint16_t> sockQueue;
+    for(uint16_t i =0; i < THREAD_POOL_SIZE; ++i){
+            threadPool.push_back(std::thread(&serverSide::ParallelServer::threadFunc, this,std::ref(sockQueue),std::ref(handeler)));
+    }
     init(port);
-    sockaddr_in recive{};
-    int clientSocket, len;
+    int clientSocket, addlen;
+    std::unique_lock<std::mutex> lock(g_mut, std::defer_lock);
     while (isRunning())
     {
-        len = sizeof(recive);
+        sockaddr_in recive{};
+        addlen = sizeof(recive);
         clientSocket = accept(getSockfd(), reinterpret_cast<sockaddr*>(&recive),
-                    reinterpret_cast<socklen_t*>(&len));
+                    reinterpret_cast<socklen_t*>(&addlen));
         if(clientSocket < 0){
             close(getSockfd());
             THROW_SYSTEM_ERROR(); 
         }
-        //handle
-        
+        std::cout << "accepting new client" << std::endl;
+        sockQueue.push(clientSocket);
     }
-    close(getSockfd());
 }
