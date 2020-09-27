@@ -39,7 +39,7 @@ namespace searchAlgoritem {
          * 
          * @return soloution::Soloution is the soloution of the maze. 
          */
-        virtual soloution::Soloution solve() = 0;
+        virtual soloution::Soloution solve() const = 0;
 
         /**
          * @brief Destroy the Search Algoritm object
@@ -63,7 +63,7 @@ namespace searchAlgoritem {
          * 
          * @return soloution::Soloution is the solotion of the maze.
          */
-        virtual soloution::Soloution solve() const;
+        soloution::Soloution solve() const;
 
         /**
          * @brief Destroy the bfs algoritem object
@@ -131,6 +131,8 @@ namespace searchAlgoritem {
     };
 
     class BestFS_Algoritem : public SearchAlgoritm {
+         
+         public:
          /**
          * @brief Construct a new a star algoritem object.
          * 

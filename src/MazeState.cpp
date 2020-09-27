@@ -27,7 +27,7 @@ std::vector<state::MazeState> state::MazeState::getAllPossibleNeighbors(const ma
        auto leftNeighbor = state::MazeState(m_x - 1, m_y, matrix.getValue(m_x - 1, m_y));
        neighbors.push_back(leftNeighbor);
     }
-    if((m_x != matrix.getWidth() - 1) && (matrix.getValue(m_x + 1, m_y) != -1)) {s
+    if((m_x != matrix.getWidth() - 1) && (matrix.getValue(m_x + 1, m_y) != -1)) {
         auto rightNeighbor = state::MazeState(m_x + 1, m_y, matrix.getValue(m_x + 1, m_y));
         neighbors.push_back(rightNeighbor); 
     }
