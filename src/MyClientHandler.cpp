@@ -128,7 +128,6 @@ void parseSecondMsg(uint16_t out, std::string& msg, std::string& typeOfAlgorithe
     //advance the counter to the next line.
     --numOfLinesLeft;
     i +=2;
-    std::cout << height << width << msg[i] << std::endl;
 
     //two lines for break, one line to entry point and one line to end point.
     while (numOfLinesLeft > 4)

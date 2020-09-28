@@ -69,64 +69,6 @@ public:
   std::string solveProblem() const;
 };
 
-class Image : public Problem {
-private:
-  /**
-   * @brief solve the rotate problem
-   *
-   * @return std::string the result
-   */
-  std::string solveRotate() const;
-  /**
-   * @brief solve the convert problem
-   *
-   * @return std::string the result
-   */
-  std::string solveConvertToGray() const;
-
-public:
-  /**
-   * @brief Construct a new Image object
-   *
-   * @param inputFiles
-   * @param typeOfProblem the specific problem (like add or convert)
-   */
-  Image(const std::vector<std::string> &inputFiles,
-        const std::string &typeOfProblem);
-  /**
-   * @brief solve the problem
-   *
-   * @return std::string the result in a string
-   */
-  std::string solveProblem() const;
-};
-
-class Hash : public Problem {
-private:
-  /**
-   * @brief solve the crc problem
-   *
-   * @return std::string the result
-   */
-  std::string solveCrc() const;
-
-public:
-  /**
-   * @brief Construct a new Hash object
-   *
-   * @param inputFiles
-   * @param typeOfProblem the specific problem (like add or convert)
-   */
-  Hash(const std::vector<std::string> &inputFiles,
-       const std::string &typeOfProblem);
-  /**
-   * @brief solve the problem
-   *
-   * @return std::string the result in a string
-   */
-  std::string solveProblem() const;
-};
-
 class Search : public Problem {
     private:
     maze::Maze* m_maze;
