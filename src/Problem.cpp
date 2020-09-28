@@ -240,27 +240,31 @@ problem::Search::Search(std::string const matrixInformation, const std::string t
          Problem({""},"") ,m_typeOfAlgoritem(typeOfAlgoritem)
 {
     uint32_t i = 0;
-    uint32_t width = 1;
-    uint32_t height = 1;
+    uint32_t realWidth = 1;
+    uint32_t realHeight = 1;
     std::size_t place = 0;
     while (matrixInformation[i] != '\n')
     {
         if(matrixInformation[i] == ','){
-            ++width;
+            ++realWidth;
         }
         ++i;
     }
-    if(height != height || width != width){
-        throw cacheExcption::CacheExcpetion(error::error_Wrong_dimensions);
-    }
+
+    std::cout << "yy" << std::endl;
     for(uint32_t j  = 0; j < matrixInformation.size(); ++j){
         if(!isValid(matrixInformation[j])){
             throw cacheExcption::CacheExcpetion(error::error_cant_solve_the_problem);
         }
         if(matrixInformation[j] == '\n'){
-            ++height;
+            ++realHeight;
         }
     }
+    if( realHeight!= height || realWidth != width){
+        throw cacheExcption::CacheExcpetion(error::error_Wrong_dimensions);
+    }
+    std::cout << "hey" << std::endl;
+
     matrix::Matrix* result = new matrix::Matrix(height, width);
     for(uint32_t k = 0; k < height; ++k){
         for(uint32_t t = 0; t < width ; t++){
@@ -283,6 +287,7 @@ problem::Search::Search(std::string const matrixInformation, const std::string t
             
         }
     }
+    std::cout << "hey" << std::endl;
     std::string startPoint_x_asString;
     std::string startPoint_y_asString;
     std::string endPoint_x_asString;
@@ -312,6 +317,7 @@ problem::Search::Search(std::string const matrixInformation, const std::string t
     uint32_t startPoint_y_asInt = std::stoi(startPoint_x_asString);
     uint32_t endPoint_x_asInt = std::stoi(endPoint_x_asString);
     uint32_t endPoint_y_asInt = std::stoi(endPoint_x_asString);
+    std::cout << "hey" << std::endl;
 
     auto startState = std::make_unique<state::MazeState>(startPoint_x_asInt, startPoint_y_asInt, result->getValue(startPoint_x_asInt, startPoint_y_asInt));
     auto endState = std::make_unique<state::MazeState>(endPoint_x_asInt, endPoint_y_asInt, result->getValue(endPoint_x_asInt, endPoint_y_asInt));
