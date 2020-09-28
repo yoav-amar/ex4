@@ -84,6 +84,22 @@ bool parseFirstMsg(uint16_t out, std::string& msg, std::string & typeOfAlgorithe
     }
 }
 
+void parseFirstLine(const std::string firstLine, uint16_t& height, uint16_t& width){
+    uint32_t count = 0;
+    std::string heightAsString, widthAsString;
+    while(firstLine[count] != ',' ) {
+        heightAsString += firstLine[count];
+        ++count;
+    }
+    ++count;
+    while(firstLine[count] != '\0') {
+        width += firstLine[count];
+        ++count;
+    }
+    height = std::stoi(heightAsString);
+    width = std::stoi(widthAsString);
+}
+
 void parseSecondMsg(uint16_t out, std::string& msg, std::string& typeOfAlgorithem){
     uint16_t numOfLinesLeft = 0;
     for(uint32_t j  = 0; j < msg.size(); ++j){
@@ -96,6 +112,17 @@ void parseSecondMsg(uint16_t out, std::string& msg, std::string& typeOfAlgorithe
     std::string matrixString;
     std::string entryPoint;
     std::string endPoint;
+    std::string firstLine;
+    uint16_t height, width;
+    while (msg[i] != '\r' && msg[i + 1] != '\n')
+    {
+        firstLine += msg[i];
+        ++i;
+    }
+    parseFirstLine(firstLine, height, width);
+    //advance the counter to the next line.
+    i +=2;
+    
 
     //two lines for break, one line to entry point and one line to end point.
     while (numOfLinesLeft > 4)
@@ -123,7 +150,7 @@ void parseSecondMsg(uint16_t out, std::string& msg, std::string& typeOfAlgorithe
     }
 
     try{
-        problem::Search searcher(matrixString, typeOfAlgorithem, entryPoint, endPoint, 3, 3);
+        problem::Search searcher(matrixString, typeOfAlgorithem, entryPoint, endPoint, height, width);
         std::string result; 
         result = searcher.solveProblem();
         printMsg(out, 0, result);
