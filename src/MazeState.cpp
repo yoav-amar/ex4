@@ -4,10 +4,9 @@
 #include "Matrix.hpp"
 #include <iostream>
 
-//I know it looks stupid but i had to...
 state::MazeState::MazeState(const uint32_t x, const uint32_t y, double value) {
-    m_x = y;
-    m_y = x;
+    m_x = x;
+    m_y = y;
     m_value = value;
 }
 
