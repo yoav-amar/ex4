@@ -14,7 +14,8 @@ enum ErrorCacheType {
   error_cant_write_to_file,
   error_cant_solve_the_problem,
   error_memory_allocate_failed,
-  error_wrong_number_of_arguments
+  error_wrong_number_of_arguments,
+  error_Wrong_dimensions
 };
 // define a class error to wrap the the enummer so we would be able to define
 // methods on it.

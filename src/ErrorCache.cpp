@@ -46,6 +46,9 @@ std::string error::ErrorCache::getErrorMessage() const {
     return "the program does not support this number of arguments "
            "maybe it is a typo.";
     break;
+    case error_Wrong_dimensions:
+    return "the width or the height is wrong";
+    break;
   // does'nt suppose to happen...
   default:
     return NULL;

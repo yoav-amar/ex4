@@ -250,7 +250,9 @@ problem::Search::Search(std::string const matrixInformation, const std::string t
         }
         ++i;
     }
-
+    if(height != height || width != width){
+        throw cacheExcption::CacheExcpetion(error::error_Wrong_dimensions);
+    }
     for(uint32_t j  = 0; j < matrixInformation.size(); ++j){
         if(!isValid(matrixInformation[j])){
             throw cacheExcption::CacheExcpetion(error::error_cant_solve_the_problem);
