@@ -93,7 +93,7 @@ void parseFirstLine(const std::string firstLine, uint16_t& height, uint16_t& wid
     }
     ++count;
     while(firstLine[count] != '\0') {
-        width += firstLine[count];
+        widthAsString += firstLine[count];
         ++count;
     }
     height = std::stoi(heightAsString);
@@ -121,8 +121,9 @@ void parseSecondMsg(uint16_t out, std::string& msg, std::string& typeOfAlgorithe
     }
     parseFirstLine(firstLine, height, width);
     //advance the counter to the next line.
+    --numOfLinesLeft;
     i +=2;
-    
+    std::cout << height << width << msg[i] << std::endl;
 
     //two lines for break, one line to entry point and one line to end point.
     while (numOfLinesLeft > 4)
