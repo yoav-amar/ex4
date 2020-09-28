@@ -6,6 +6,7 @@
 #include <mutex>
 #include "MyClientHandler.hpp"
 #include "Problem.hpp"
+#include "CacheException.hpp"
 
 #define WAIT_FOR_OUT 5
 
@@ -119,7 +120,11 @@ void parseSecondMsg(uint16_t out, std::string& msg, std::string& typeOfAlgorithe
         firstLine += msg[i];
         ++i;
     }
+    try{
     parseFirstLine(firstLine, height, width);
+    }catch(...){
+        printMsg(out, 4, "");
+    }
     //advance the counter to the next line.
     --numOfLinesLeft;
     i +=2;
@@ -155,8 +160,9 @@ void parseSecondMsg(uint16_t out, std::string& msg, std::string& typeOfAlgorithe
         std::string result; 
         result = searcher.solveProblem();
         printMsg(out, 0, result);
-    }catch(...){
-        printMsg(out, 4, "");
+    }
+    catch(...){
+        printMsg(out, 5, "");
     }
     
 }
