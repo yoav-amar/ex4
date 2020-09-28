@@ -87,7 +87,7 @@ soloution::Soloution searchAlgoritem::BFS_Algoritem::solve() const {
     queue->pop();
   }
   auto failureSoloution =
-      std::make_unique<soloution::Soloution>("no solotion", 0);
+      std::make_unique<soloution::Soloution>("no solotion", 0, 0, 0);
   return *failureSoloution;
 }
 
@@ -124,7 +124,7 @@ soloution::Soloution searchAlgoritem::DFS_Algoritem::solve() const {
     }
   }
   auto failureSoloution =
-      std::make_unique<soloution::Soloution>("no solotion", 0);
+      std::make_unique<soloution::Soloution>("no solotion", 0, 0, 0);
   return *failureSoloution;
 }
 
@@ -192,7 +192,7 @@ soloution::Soloution searchAlgoritem::A_STAR_Algoritem::solve() const {
     }
   }
   auto failureSoloution =
-      std::make_unique<soloution::Soloution>("no solotion", 0);
+      std::make_unique<soloution::Soloution>("no solotion", 0, 0, 0);
   return *failureSoloution;
 }
 
@@ -231,6 +231,6 @@ soloution::Soloution searchAlgoritem::BestFS_Algoritem::solve() const {
     }
   }
   auto failureSoloution =
-      std::make_unique<soloution::Soloution>("no solotion", 0);
+      std::make_unique<soloution::Soloution>("no solotion", 0, 0, 0);
   return *failureSoloution;
 }

@@ -56,7 +56,7 @@ soloution::Soloution soloution::Soloution::restoreSoloution(
   std::string path("");
   double score = 0;
   if (pairs.size() == 1) {
-    auto soloution = std::make_unique<Soloution>(path, score);
+    auto soloution = std::make_unique<Soloution>(path, score, numberOfVetices, numberOfDevelopedVetices);
     return *soloution;
   }
   uint32_t count = pairs.size() - 1;
