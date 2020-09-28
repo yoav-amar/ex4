@@ -235,46 +235,44 @@ bool isValid(char ch){
 //     return *result;
 // }
 
-problem::Search::Search(std::string matrixInformnation, std::string startPoint, std::string endPoint, std::string typeOfAlgoritem = "BFS"): 
-   Problem({""},"") ,m_typeOfAlgoritem(typeOfAlgoritem)
+problem::Search::Search(std::string const matrixInformation, const std::string typeOfAlgoritem,
+       const std::string startPoint, const std::string endPoint, uint32_t height, uint32_t width): 
+         Problem({""},"") ,m_typeOfAlgoritem(typeOfAlgoritem)
 {
     uint32_t i = 0;
     uint32_t width = 1;
     uint32_t height = 1;
     std::size_t place = 0;
-    while (matrixInformnation[i] != '\n')
+    while (matrixInformation[i] != '\n')
     {
-        if(matrixInformnation[i] == ','){
+        if(matrixInformation[i] == ','){
             ++width;
         }
         ++i;
     }
 
-    for(uint32_t j  = 0; j < matrixInformnation.size(); ++j){
-        if(!isValid(matrixInformnation[j])){
+    for(uint32_t j  = 0; j < matrixInformation.size(); ++j){
+        if(!isValid(matrixInformation[j])){
             throw cacheExcption::CacheExcpetion(error::error_cant_solve_the_problem);
         }
-        if(matrixInformnation[j] == '\n'){
+        if(matrixInformation[j] == '\n'){
             ++height;
         }
     }
-    std::cout << "h: " << height << std::endl;
-    std::cout << "w: " << width << std::endl;
     matrix::Matrix* result = new matrix::Matrix(height, width);
     for(uint32_t k = 0; k < height; ++k){
         for(uint32_t t = 0; t < width ; t++){
-            while (!isNumber(matrixInformnation[place]))
+            while (!isNumber(matrixInformation[place]))
             {
                 ++place;
             }
             double tmp;
-            if(matrixInformnation[place] == 'b'){
+            if(matrixInformation[place] == 'b'){
                 tmp = -1;
             }else{
-                tmp = std::stod(matrixInformnation.substr(place));
+                tmp = std::stod(matrixInformation.substr(place));
             }
-            std::cout << tmp << ",";
-            while (isNumber(matrixInformnation[place]) || matrixInformnation[place] == '.')
+            while (isNumber(matrixInformation[place]) || matrixInformation[place] == '.')
             {
                 ++place;
             }
@@ -282,7 +280,6 @@ problem::Search::Search(std::string matrixInformnation, std::string startPoint, 
             result->setValue(k, t, tmp);
             
         }
-        std::cout << std::endl;
     }
     std::string startPoint_x_asString;
     std::string startPoint_y_asString;
@@ -290,7 +287,6 @@ problem::Search::Search(std::string matrixInformnation, std::string startPoint, 
     std::string endPoint_y_asString;
     
     uint32_t count = 0;
-    std::cout << "yoyo" << std::endl;
     while(startPoint[count] != ',' ) {
         startPoint_x_asString += startPoint[count];
         ++count;
@@ -305,24 +301,18 @@ problem::Search::Search(std::string matrixInformnation, std::string startPoint, 
         endPoint_x_asString += endPoint[count];
         ++count;
     }
-    std::cout << "yoyo" << std::endl;
     ++count;
     while(endPoint[count] != '\0') {
         endPoint_y_asString += endPoint[count];
         ++count;
     }
-    std::cout << startPoint_x_asString << std::endl;
-    int32_t startPoint_x_asInt = std::stoi(startPoint_x_asString);
-        std::cout << "1" << std::endl;
+    uint32_t startPoint_x_asInt = std::stoi(startPoint_x_asString);
     uint32_t startPoint_y_asInt = std::stoi(startPoint_x_asString);
-        std::cout << "2" << std::endl;
     uint32_t endPoint_x_asInt = std::stoi(endPoint_x_asString);
     uint32_t endPoint_y_asInt = std::stoi(endPoint_x_asString);
-    std::cout << "yoyo" << std::endl;
 
     auto startState = std::make_unique<state::MazeState>(startPoint_x_asInt, startPoint_y_asInt, result->getValue(startPoint_x_asInt, startPoint_y_asInt));
     auto endState = std::make_unique<state::MazeState>(endPoint_x_asInt, endPoint_y_asInt, result->getValue(endPoint_x_asInt, endPoint_y_asInt));
-    std::cout << "yoyo" << std::endl;
 
     m_maze = new maze::Maze(*result, *startState, *endState);
 }
