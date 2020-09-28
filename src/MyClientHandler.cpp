@@ -85,9 +85,8 @@ bool parseFirstMsg(uint16_t out, std::string& msg, std::string & typeOfAlgorithe
 }
 
 void parseSecondMsg(uint16_t out, std::string& msg, std::string& typeOfAlgorithem){
-    std::cout << msg << std::endl;
     uint16_t numOfLinesLeft = 0;
-        for(uint32_t j  = 0; j < msg.size(); ++j){
+    for(uint32_t j  = 0; j < msg.size(); ++j){
         if(msg[j] == '\n'){
             ++numOfLinesLeft;
         }
@@ -97,15 +96,19 @@ void parseSecondMsg(uint16_t out, std::string& msg, std::string& typeOfAlgorithe
     std::string matrixString;
     std::string entryPoint;
     std::string endPoint;
+
     //two lines for break, one line to entry point and one line to end point.
     while (numOfLinesLeft > 4)
     {
         matrixString +=msg[i];
-        if(msg[i] == '\n'){
+        //end of line.
+        if(msg[i+1] == '\r' && msg[i+2] == '\n'){
             --numOfLinesLeft;
         }
         ++i;
     }
+    //advance the counter to the next line.
+    i +=2;
     while (msg[i] != '\r' && msg[i + 1] != '\n')
     {
         entryPoint += msg[i];
@@ -118,9 +121,10 @@ void parseSecondMsg(uint16_t out, std::string& msg, std::string& typeOfAlgorithe
         endPoint += msg[i];
         ++i;
     }
-    problem::Search searcher(matrixString, typeOfAlgorithem, entryPoint, endPoint);
-    std::string result; 
+
     try{
+        problem::Search searcher(matrixString, typeOfAlgorithem, entryPoint, endPoint, 3, 3);
+        std::string result; 
         result = searcher.solveProblem();
         printMsg(out, 0, result);
     }catch(...){
