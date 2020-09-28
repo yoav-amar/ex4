@@ -11,6 +11,8 @@ namespace soloution {
         private:
         std::string m_pathToSoloution;
         uint32_t m_cost;
+        uint32_t m_numberOfVertices;
+        uint32_t m_numberOfDevelopedVetices;
 
         public:
         /**
@@ -28,7 +30,7 @@ namespace soloution {
          * @param getPathToSoloution is a string represent the path of the solotion(from the beggining point to teh end.)
          * @param cost is the price we cost to solved the maze based on the values of every state.
          */
-        Soloution(const std::string& getPathToSoloution, const uint32_t cost);
+        Soloution(const std::string& getPathToSoloution, const uint32_t cost, const uint32_t numberOfVertices, const uint32_t numberOfDevelopedVetices);
 
         /**
          * @brief Get the Path To Soloution object (the steps we need to do the make it to the end point from the begging point).
@@ -44,5 +46,18 @@ namespace soloution {
          */
         uint32_t getCost() const ;
 
+        /**
+         * @brief Get the Number Of Vertices object
+         * 
+         * @return uint32_t is the number of the vertices.
+         */
+        uint32_t getNumberOfVertices() const;
+
+        /**
+         * @brief Get the Number Of Developed Vertices object
+         * 
+         * @return uint32_t is the number of the developed vertices.
+         */
+        uint32_t getNumberOfDevelopedVertices() const;
     };
 }

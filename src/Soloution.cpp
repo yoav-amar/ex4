@@ -4,9 +4,11 @@
 #include <iostream>
 #include <memory>
 #include <string>
-soloution::Soloution::Soloution(const std::string& path, const uint32_t cost)
+soloution::Soloution::Soloution(const std::string& path, const uint32_t cost, const uint32_t numberOfVertices, const uint32_t numberOfDevelopedVertices) 
     : m_pathToSoloution(path) {
   m_cost = cost;
+  m_numberOfVertices = numberOfVertices;
+  m_numberOfDevelopedVetices = numberOfDevelopedVertices;
 }
 
 std::string soloution::Soloution::getPathToSoloution() const  {
@@ -49,6 +51,8 @@ std::string reversPath(std::string path) {
 
 soloution::Soloution soloution::Soloution::restoreSoloution(
     const std::vector<statesPair::StatesPair> &pairs, const maze::Maze &maze) {
+  uint32_t numberOfVetices = maze.getHeight() * maze.getWidth();
+  uint32_t numberOfDevelopedVetices = pairs.size();  
   std::string path("");
   double score = 0;
   if (pairs.size() == 1) {
@@ -68,6 +72,16 @@ soloution::Soloution soloution::Soloution::restoreSoloution(
       count -= 1;
     }
   }
-  auto soloution = std::make_unique<Soloution>(reversPath(path), score);
+  auto soloution = std::make_unique<Soloution>(reversPath(path), score, numberOfVetices, numberOfDevelopedVetices);
   return *soloution;
 }
+
+uint32_t soloution::Soloution::getNumberOfVertices() const{
+  return m_numberOfVertices;
+}
+
+uint32_t soloution::Soloution::getNumberOfDevelopedVertices() const {
+  return m_numberOfDevelopedVetices;
+}
+
+
