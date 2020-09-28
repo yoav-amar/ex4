@@ -291,7 +291,7 @@ problem::Search::Search(std::string matrixInformnation, std::string startPoint, 
         ++count;
     }
     ++count;
-    while(startPoint[count] != 0) {
+    while(startPoint[count] != '\0') {
         startPoint_y_asString += startPoint[count];
         ++count;
     }
@@ -301,7 +301,7 @@ problem::Search::Search(std::string matrixInformnation, std::string startPoint, 
         ++count;
     }
     ++count;
-    while(endPoint[count] != 0) {
+    while(endPoint[count] != '\0') {
         endPoint_y_asString += endPoint[count];
         ++count;
     }
@@ -315,6 +315,8 @@ problem::Search::Search(std::string matrixInformnation, std::string startPoint, 
 
     m_maze = new maze::Maze(*result, *startState, *endState);
 }
+
+
 std::string problem::Search::solveProblem() const {
     std::unique_ptr<searchAlgoritem::SearchAlgoritm> searcher;
     if (m_typeOfAlgoritem.compare("DFS") == 0) {
