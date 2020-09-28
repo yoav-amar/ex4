@@ -134,7 +134,8 @@ class Search : public Problem {
     public:
 
     maze::Maze getMaze() const;
-    Search(std::string const matrixInformation, const std::string typeOfAlgoritem, const std::string startPoint, const std::string endPoint);
+    Search(std::string const matrixInformation, const std::string typeOfAlgoritem,
+       const std::string startPoint, const std::string endPoint, uint32_t height, uint32_t width);
     std::string solveProblem() const;
 };
 
