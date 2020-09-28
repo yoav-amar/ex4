@@ -2,7 +2,6 @@
 #include "Maze.hpp"
 #include "MazeState.hpp"
 #include "Soloution.hpp"
-#include "StatesPairTester.hpp"
 #include <iostream>
 #include <map>
 #include <memory>
