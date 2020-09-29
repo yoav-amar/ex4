@@ -38,17 +38,17 @@ std::string statesPair::StatesPair::getStepFromPrevToCur() const {
   }
   if (m_prevState.getX() + 1 == m_curState.getX() &&
       m_prevState.getY() == m_curState.getY()) {
-    return ",right";
+    return ",Right";
   }
   if (m_prevState.getX() - 1 == m_curState.getX() &&
       m_prevState.getY() == m_curState.getY()) {
-    return ",left";
+    return ",Left";
   }
   if (m_prevState.getY() + 1 == m_curState.getY() &&
       m_prevState.getX() == m_curState.getX()) {
-    return ",up";
+    return ",Up";
   }
-  return ",down";
+  return ",Down";
 }
 
 bool statesPair::StatesPair::operator!=(const statesPair::StatesPair& other) {

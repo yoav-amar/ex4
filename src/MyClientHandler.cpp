@@ -6,6 +6,7 @@
 #include <mutex>
 #include "MyClientHandler.hpp"
 #include "Problem.hpp"
+#include "CacheException.hpp"
 
 #define WAIT_FOR_OUT 5
 
@@ -84,10 +85,25 @@ bool parseFirstMsg(uint16_t out, std::string& msg, std::string & typeOfAlgorithe
     }
 }
 
+void parseFirstLine(const std::string firstLine, uint16_t& height, uint16_t& width){
+    uint32_t count = 0;
+    std::string heightAsString, widthAsString;
+    while(firstLine[count] != ',' ) {
+        heightAsString += firstLine[count];
+        ++count;
+    }
+    ++count;
+    while(firstLine[count] != '\0') {
+        widthAsString += firstLine[count];
+        ++count;
+    }
+    height = std::stoi(heightAsString);
+    width = std::stoi(widthAsString);
+}
+
 void parseSecondMsg(uint16_t out, std::string& msg, std::string& typeOfAlgorithem){
-    std::cout << msg << std::endl;
     uint16_t numOfLinesLeft = 0;
-        for(uint32_t j  = 0; j < msg.size(); ++j){
+    for(uint32_t j  = 0; j < msg.size(); ++j){
         if(msg[j] == '\n'){
             ++numOfLinesLeft;
         }
@@ -97,15 +113,34 @@ void parseSecondMsg(uint16_t out, std::string& msg, std::string& typeOfAlgorithe
     std::string matrixString;
     std::string entryPoint;
     std::string endPoint;
+    std::string firstLine;
+    uint16_t height, width;
+    while (msg[i] != '\r' && msg[i + 1] != '\n')
+    {
+        firstLine += msg[i];
+        ++i;
+    }
+    try{
+    parseFirstLine(firstLine, height, width);
+    }catch(...){
+        printMsg(out, 4, "");
+    }
+    //advance the counter to the next line.
+    --numOfLinesLeft;
+    i +=2;
+
     //two lines for break, one line to entry point and one line to end point.
     while (numOfLinesLeft > 4)
     {
         matrixString +=msg[i];
-        if(msg[i] == '\n'){
+        //end of line.
+        if(msg[i+1] == '\r' && msg[i+2] == '\n'){
             --numOfLinesLeft;
         }
         ++i;
     }
+    //advance the counter to the next line.
+    i +=2;
     while (msg[i] != '\r' && msg[i + 1] != '\n')
     {
         entryPoint += msg[i];
@@ -118,13 +153,15 @@ void parseSecondMsg(uint16_t out, std::string& msg, std::string& typeOfAlgorithe
         endPoint += msg[i];
         ++i;
     }
-    problem::Search searcher(matrixString, typeOfAlgorithem, entryPoint, endPoint);
-    std::string result; 
+
     try{
+        problem::Search searcher(matrixString, typeOfAlgorithem, entryPoint, endPoint, height, width);
+        std::string result; 
         result = searcher.solveProblem();
         printMsg(out, 0, result);
-    }catch(...){
-        printMsg(out, 4, "");
+    }
+    catch(...){
+        printMsg(out, 5, "");
     }
     
 }
