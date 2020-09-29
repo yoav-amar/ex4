@@ -2,7 +2,6 @@
 #include "Maze.hpp"
 #include "MazeState.hpp"
 #include "Soloution.hpp"
-#include "StatesPairTester.hpp"
 #include <iostream>
 #include <map>
 #include <memory>
@@ -51,83 +50,87 @@ searchAlgoritem::A_STAR_Algoritem::heuristicValue(const state::MazeState &state,
 bool searchAlgoritem::SearchAlgoritm::boothIsAlreadyVisited(
     const std::vector<statesPair::StatesPair> &booths,
     const state::MazeState &other) {
-  for (int i = 0; i < booths.size(); i++) {
-    if (booths.at(i).getCur().equlas(other)) {
-      return true;
-    }
+      for (int i = 0; i < booths.size(); ++i) {
+              //  std::cout<<booths.at(i).getCur().getX()<<","<<booths.at(i).getCur().getY()<<"|"<<other.getX()<<","<<other.getY()<<std::endl;
+          if (booths.at(i).getCur().equlas(other)) {
+              //  std::cout<<"cap";
+               return true;
+          }
+      }
+      return false;
   }
-  return false;
-}
 
 soloution::Soloution searchAlgoritem::BFS_Algoritem::solve() const {
-  auto queue = std::make_unique<std::queue<statesPair::StatesPair>>();
+  auto endPoint = std::make_unique<state::MazeState>(m_maze.getEndState().getX(), m_maze.getEndState().getY(), m_maze.getEndState().getValue());
+  auto mazeAsMatrix = std::make_unique<matrix::Matrix>(m_maze.getMazeAsMatrix());
   auto usedBooths = std::make_unique<std::vector<statesPair::StatesPair>>();
-  auto startingBooth = std::make_unique<statesPair::StatesPair>(
-      m_maze.getstartState(), m_maze.getstartState());
+  auto queue =std::make_unique<std::queue<statesPair::StatesPair>>();
+  auto startingBooth = std::make_unique<statesPair::StatesPair>(m_maze.getstartState(), m_maze.getstartState());
+  usedBooths->push_back(*startingBooth);
   queue->push(*startingBooth);
-  while (!queue->empty()) {
-    // if we got to the end state find the soloution...
-    if (queue->front().getCur().equlas(m_maze.getEndState())) {
-      usedBooths->push_back(queue->front());
+
+  while(!queue->empty()) {
+    auto top = std::make_unique<statesPair::StatesPair>(queue->front().getPrev(), queue->front().getCur());
+    auto top_cur = std::make_unique<state::MazeState>(queue->front().getCur().getX(), queue->front().getCur().getY(), queue->front().getCur().getValue());
+    if(top_cur->equlas(*endPoint)) {
       return soloution::Soloution::restoreSoloution(*usedBooths, m_maze);
     }
-    // if this state is not the end state get all the neighbors of this state to
-    // the queue(onlt the one we hasn't visited yet)
-    auto neighbors = std::make_unique<std::vector<state::MazeState>>(
-        queue->front().getCur().getAllPossibleNeighbors(
-            m_maze.getMazeAsMatrix()));
-    for (int i = 0; i < neighbors->size(); i++) {
-      if (!boothIsAlreadyVisited(*usedBooths, neighbors->at(i))) {
-        auto pair = std::make_unique<statesPair::StatesPair>(
-            queue->front().getCur(), neighbors->at(i));
+    queue->pop();
+    auto neighbors = std::make_unique<std::vector<state::MazeState>>(top_cur->getAllPossibleNeighbors(*mazeAsMatrix));
+    for(int i = 0; i < neighbors->size(); ++i) {
+      if(!boothIsAlreadyVisited(*usedBooths, neighbors->at(i))) {
+        auto pair = std::make_unique<statesPair::StatesPair>(*top_cur, neighbors->at(i));
+        usedBooths->push_back(*pair);
         queue->push(*pair);
       }
     }
-    // move the top element from the queue to the usedElements vector.
-    usedBooths->push_back(queue->front());
-    queue->pop();
   }
   auto failureSoloution =
-      std::make_unique<soloution::Soloution>("no solotion", 0);
+      std::make_unique<soloution::Soloution>("no solotion", 0, 0, 0);
   return *failureSoloution;
 }
 
 soloution::Soloution searchAlgoritem::DFS_Algoritem::solve() const {
+  auto mazeAsMatrix = std::make_unique<matrix::Matrix>(m_maze.getMazeAsMatrix());
   auto stack = std::make_unique<std::stack<statesPair::StatesPair>>();
   auto usedBooths = std::make_unique<std::vector<statesPair::StatesPair>>();
   auto startingBooth = std::make_unique<statesPair::StatesPair>(
       m_maze.getstartState(), m_maze.getstartState());
+      usedBooths->push_back(*startingBooth);
   stack->push(*startingBooth);
   while (!stack->empty()) {
-    // if we got to the end state find the soloution...
-    if (stack->top().getCur().equlas(m_maze.getEndState())) {
-      usedBooths->push_back(stack->top());
+    auto top = std::make_unique<statesPair::StatesPair>(stack->top());
+    auto top_cur = std::make_unique<state::MazeState>(top->getCur());
+    //   // if we got to the end state find the soloution...
+    if (top_cur->equlas(m_maze.getEndState())) {
       return soloution::Soloution::restoreSoloution(*usedBooths, m_maze);
     }
-    // if this state is not the end state get all the neighbors of this state to
-    // the queue(onlt the one we hasn't visited yet)
+    //   // if this state is not the end state get all the neighbors of this
+    //   state to
+    //   // the queue(onlt the one we hasn't visited yet)
     auto neighbors = std::make_unique<std::vector<state::MazeState>>(
-        stack->top().getCur().getAllPossibleNeighbors(
-            m_maze.getMazeAsMatrix()));
-    // move the top element from the queue to the usedElements vector.
-    usedBooths->push_back(stack->top());
+        top_cur->getAllPossibleNeighbors(
+            *mazeAsMatrix));
+    //   // move the top element from the queue to the usedElements vector.
     stack->pop();
     for (int i = 0; i < neighbors->size(); i++) {
       if (!boothIsAlreadyVisited(*usedBooths, neighbors->at(i))) {
-        auto pair = std::make_unique<statesPair::StatesPair>(
-            stack->top().getCur(), neighbors->at(i));
+        auto pair =
+            std::make_unique<statesPair::StatesPair>(*top_cur, neighbors->at(i));
+            usedBooths->push_back(*pair);
         stack->push(*pair);
       }
     }
   }
   auto failureSoloution =
-      std::make_unique<soloution::Soloution>("no solotion", 0);
+      std::make_unique<soloution::Soloution>("no solotion", 0, 0, 0);
   return *failureSoloution;
 }
 
 // bad design has forced me to write this weird thing, im sorry...
 // https://www.youtube.com/watch?v=3tmd-ClpJxA
 soloution::Soloution searchAlgoritem::A_STAR_Algoritem::solve() const {
+  auto mazeAsMatrix = std::make_unique<matrix::Matrix>(m_maze.getMazeAsMatrix());
   auto priorityQueue = std::make_unique<std::priority_queue<
       statesPair::StatesPair, std::vector<statesPair::StatesPair>,
       statesPair::StatesPair::pairComparator>>();
@@ -138,45 +141,57 @@ soloution::Soloution searchAlgoritem::A_STAR_Algoritem::solve() const {
                            heuristicValue(startingBooth->getCur(), m_maze);
   auto heuristic_startState = std::make_unique<state::MazeState>(
       startingBooth->getCur().getX(), startingBooth->getCur().getY(),
-      heuristicValue);
+      heuristic_value);
   auto heuristic_startingBooth = std::make_unique<statesPair::StatesPair>(
       *heuristic_startState, *heuristic_startState);
 
   priorityQueue->push(*heuristic_startingBooth);
-
+  usedBooths->push_back(*startingBooth);
   while (!priorityQueue->empty()) {
-    // if we got to the end state find the soloution...
-    if (priorityQueue->top().getCur().equlas(m_maze.getEndState())) {
-      auto regular_pair = std::make_unique<statesPair::StatesPair>(priorityQueue->top().getPrev(), priorityQueue->top().getCur(), priorityQueue->top().getCur().getValue()- heuristicValue(priorityQueue->top().getCur(), m_maze));
-      usedBooths->push_back(*regular_pair);
+    auto top = std::make_unique<statesPair::StatesPair>(priorityQueue->top());
+    auto top_cur = std::make_unique<state::MazeState>(top->getCur());
+    auto regular_cur = std::make_unique<state::MazeState>(
+        priorityQueue->top().getCur().getX(),
+        priorityQueue->top().getCur().getY(),
+        priorityQueue->top().getCur().getValue() -
+            heuristicValue(priorityQueue->top().getCur(), m_maze));
+    //   // if we got to the end state find the soloution...
+    if (regular_cur->equlas(m_maze.getEndState())) {
       return soloution::Soloution::restoreSoloution(*usedBooths, m_maze);
     }
-    // if this state is not the end state get all the neighbors of this state to
-    // the queue(onlt the one we hasn't visited yet)
+    //   // if this state is not the end state get all the neighbors of this
+    //   state to
+    //   // the queue(onlt the one we hasn't visited yet)
     auto neighbors = std::make_unique<std::vector<state::MazeState>>(
-        priorityQueue->top().getCur().getAllPossibleNeighbors(
-            m_maze.getMazeAsMatrix()));
-    // move the top element from the queue to the usedElements vector.
-    usedBooths->push_back(priorityQueue->top());
+        regular_cur->getAllPossibleNeighbors(
+            *mazeAsMatrix));
+    //   // move the top element from the queue to the usedElements vector.
+    auto regular_pair = std::make_unique<statesPair::StatesPair>(
+        priorityQueue->top().getPrev(), *regular_cur);
+    usedBooths->push_back(*regular_pair);
     priorityQueue->pop();
+
     for (int i = 0; i < neighbors->size(); i++) {
       auto heuristic_neighbor = std::make_unique<state::MazeState>(
           neighbors->at(i).getX(), neighbors->at(i).getY(),
           neighbors->at(i).getValue() +
               heuristicValue(neighbors->at(i), m_maze));
       if (!boothIsAlreadyVisited(*usedBooths, *heuristic_neighbor)) {
-        auto pair = std::make_unique<statesPair::StatesPair>(
-            priorityQueue->top().getCur(), *heuristic_neighbor);
-        priorityQueue->push(*pair);
+        auto heuristic_pair = std::make_unique<statesPair::StatesPair>(
+            *top_cur, *heuristic_neighbor);
+        auto regular_pair = std::make_unique<statesPair::StatesPair>(*regular_cur, neighbors->at(i));
+        priorityQueue->push(*heuristic_pair);
+        usedBooths->push_back(*regular_pair);
       }
     }
   }
   auto failureSoloution =
-      std::make_unique<soloution::Soloution>("no solotion", 0);
+      std::make_unique<soloution::Soloution>("no solotion", 0, 0, 0);
   return *failureSoloution;
 }
 
 soloution::Soloution searchAlgoritem::BestFS_Algoritem::solve() const {
+  auto mazeAsMatrix = std::make_unique<matrix::Matrix>(m_maze.getMazeAsMatrix());
   auto priorityQueue = std::make_unique<std::priority_queue<
       statesPair::StatesPair, std::vector<statesPair::StatesPair>,
       statesPair::StatesPair::pairComparator>>();
@@ -185,30 +200,32 @@ soloution::Soloution searchAlgoritem::BestFS_Algoritem::solve() const {
       m_maze.getstartState(), m_maze.getstartState());
 
   priorityQueue->push(*startingBooth);
+  usedBooths->push_back(*startingBooth);
 
   while (!priorityQueue->empty()) {
+    auto top = std::make_unique<statesPair::StatesPair>(priorityQueue->top());
+    auto top_cur = std::make_unique<state::MazeState>(top->getCur());
     // if we got to the end state find the soloution...
-    if (priorityQueue->top().getCur().equlas(m_maze.getEndState())) {
-      usedBooths->push_back(priorityQueue->top());
+    if (top_cur->equlas(m_maze.getEndState())) {
       return soloution::Soloution::restoreSoloution(*usedBooths, m_maze);
     }
     // if this state is not the end state get all the neighbors of this state to
     // the queue(onlt the one we hasn't visited yet)
     auto neighbors = std::make_unique<std::vector<state::MazeState>>(
-        priorityQueue->top().getCur().getAllPossibleNeighbors(
-            m_maze.getMazeAsMatrix()));
+        top_cur->getAllPossibleNeighbors(
+           *mazeAsMatrix));
     // move the top element from the queue to the usedElements vector.
-    usedBooths->push_back(priorityQueue->top());
     priorityQueue->pop();
     for (int i = 0; i < neighbors->size(); i++) {
       if (!boothIsAlreadyVisited(*usedBooths, neighbors->at(i))) {
-        auto pair = std::make_unique<statesPair::StatesPair>(
-            priorityQueue->top().getCur(), neighbors->at(i));
+        auto pair =
+            std::make_unique<statesPair::StatesPair>(*top_cur, neighbors->at(i));
+            usedBooths->push_back(*pair);
         priorityQueue->push(*pair);
       }
     }
   }
   auto failureSoloution =
-      std::make_unique<soloution::Soloution>("no solotion", 0);
+      std::make_unique<soloution::Soloution>("no solotion", 0, 0, 0);
   return *failureSoloution;
 }
